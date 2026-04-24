@@ -3,1833 +3,1433 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NourishBox Open Day Edition — DigitalXperience.ai</title>
+<title>Top Tier Marketers — DigitalXperience.ai</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════
-   BRAND PALETTE  #8FC32E · #889CE7 · #000000
-   Font: Open Sans 700
+   BRAND PALETTE  #8FC32E · #889CE7 · #0a0a0a
+   Fonts: Open Sans + DM Mono
 ═══════════════════════════════════════════════ */
 :root {
   --bg:      #0a0a0a;
   --surface: #111111;
   --card:    #181818;
   --border:  #2c2c2c;
-  --brand1:  #8FC32E;   /* lime green */
-  --brand2:  #889CE7;   /* lavender  */
-  --green:   #8FC32E;
-  --purple:  #889CE7;
+  --brand1:  #8FC32E;
+  --brand2:  #889CE7;
   --text:    #f0f0f0;
   --muted:   #888888;
   --red:     #FF4D6D;
-  --profit:  #8FC32E;
+  --orange:  #FF9500;
+  --gold:    #FFD60A;
 }
 
+/* ── LIGHT MODE ── */
+body.light {
+  --bg:      #f0f2f5;
+  --surface: #e2e6ec;
+  --card:    #ffffff;
+  --border:  #c8cdd6;
+  --brand1:  #6a9a1f;
+  --brand2:  #5c6fc9;
+  --text:    #111827;
+  --muted:   #4b5563;
+  --red:     #dc2626;
+  --orange:  #d97706;
+  --gold:    #b45309;
+}
+
+/* Light mode structural reinforcement — prevents floaty look */
+body.light body::before{opacity:.4;}
+body.light .game-hdr{
+  background:rgba(225,229,235,.98);
+  border-bottom:2px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+body.light .rule-card{
+  border:1.5px solid var(--border);
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+body.light .ans-btn{
+  border:1.5px solid var(--border);
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+body.light .ans-btn:hover:not(:disabled){
+  border-color:var(--brand2);
+  box-shadow:0 3px 12px rgba(92,111,201,.15);
+}
+body.light .results-card{
+  border:1.5px solid var(--border);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+body.light .feedback-bar.correct{background:rgba(106,154,31,.1);border:1.5px solid rgba(106,154,31,.4);color:#3d6b00;}
+body.light .feedback-bar.wrong{background:rgba(220,38,38,.07);border:1.5px solid rgba(220,38,38,.3);color:#b91c1c;}
+body.light .feedback-bar.timeout{background:rgba(217,119,6,.07);border:1.5px solid rgba(217,119,6,.3);color:#92400e;}
+body.light .btn-pass-hdr{
+  background:rgba(92,111,201,.1);
+  border:1.5px solid rgba(92,111,201,.35);
+}
+body.light .home-badge{
+  background:rgba(106,154,31,.08);
+  border:1.5px solid rgba(106,154,31,.25);
+}
+body.light .lp-step{background:#c0c6d0;}
+body.light .lp-step.done{background:var(--brand1);}
+body.light .lp-step.current{background:linear-gradient(90deg,var(--brand1),var(--brand2));}
+body.light body::before{
+  background-image:
+    linear-gradient(rgba(0,0,0,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,0,0,.04) 1px,transparent 1px);
+}
+
+/* ── MODE TOGGLE ── */
+.mode-toggle{
+  display:flex;align-items:center;gap:10px;
+  margin-top:20px;
+  animation:fadeUp .4s .22s ease both;
+}
+.mode-toggle-label{
+  font-family:'DM Mono',monospace;font-size:.7rem;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);
+}
+.toggle-switch{
+  position:relative;width:44px;height:24px;
+  cursor:pointer;flex-shrink:0;
+}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{
+  position:absolute;inset:0;
+  background:var(--border);
+  border-radius:100px;
+  border:1.5px solid var(--border);
+  transition:all .25s;
+}
+.toggle-switch input:checked + .toggle-track{
+  background:var(--brand2);
+  border-color:var(--brand2);
+}
+.toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:16px;height:16px;
+  background:#fff;border-radius:50%;
+  transition:transform .25s;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.toggle-switch input:checked ~ .toggle-thumb{
+  transform:translateX(20px);
+}
+.toggle-icon{font-size:.9rem;}
+
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Open Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(143,195,46,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(136,156,231,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Open Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* Subtle grid background */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(143,195,46,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(136,156,231,.02) 1px,transparent 1px);
+  background-size:44px 44px;
+  pointer-events:none;
+  z-index:0;
+}
 
 /* ── SCREENS ── */
 .screen{display:none!important;position:relative;z-index:1;}
-.screen.on{display:block!important;}
-#s-home.on,#s-reveal.on,#s-results.on,#s-login.on,#s-reflect.on{display:flex!important;}
+.screen.on{display:flex!important;flex-direction:column;}
 
-/* ── DX LOGO (inline SVG wordmark) ── */
-.dx-logo{display:inline-flex;align-items:center;gap:8px;}
-.dx-logo-badge{width:32px;height:32px;background:linear-gradient(135deg,var(--brand1),var(--brand2));border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.dx-logo-badge svg{width:18px;height:18px;}
-.dx-logo-text{font-family:'Open Sans',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.4px;color:var(--text);}
+/* ── DX LOGO ── */
+.dx-logo{display:inline-flex;align-items:center;gap:9px;}
+.dx-logo-badge{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--brand1),var(--brand2));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.dx-logo-badge svg{width:20px;height:20px;}
+.dx-logo-text{font-weight:800;font-size:1.05rem;letter-spacing:-.4px;}
 .dx-logo-text span{color:var(--brand1);}
-.dx-logo-sub{font-family:'Open Sans',sans-serif;font-size:.65rem;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-top:1px;}
+.dx-logo-sub{font-family:'DM Mono',monospace;font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-top:1px;}
 .dx-logo-stack{display:flex;flex-direction:column;line-height:1.1;}
 
+/* ── HOME SCREEN ── */
+#s-home{
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:48px 24px 60px;
+}
+.home-logo{margin-bottom:12px;animation:fadeUp .5s ease both;}
+.home-tagline{
+  font-size:.7rem;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:28px;
+  animation:fadeUp .4s .06s ease both;
+}
+.home-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,rgba(143,195,46,.08),rgba(136,156,231,.08));
+  border:1px solid rgba(143,195,46,.2);
+  border-radius:100px;
+  padding:6px 20px;
+  font-family:'DM Mono',monospace;
+  font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--brand1);
+  margin-bottom:22px;
+  animation:fadeUp .4s .08s ease both;
+}
+.home-h{
+  font-size:clamp(2.6rem,7vw,4.2rem);
+  font-weight:800;letter-spacing:-2px;line-height:1.03;
+  margin-bottom:14px;
+  animation:fadeUp .4s .1s ease both;
+}
+.home-h em{
+  background:linear-gradient(90deg,var(--brand1),var(--brand2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-style:normal;
+}
+.home-sub{
+  color:var(--muted);font-size:.95rem;line-height:1.8;
+  max-width:460px;margin:0 auto 28px;
+  animation:fadeUp .4s .13s ease both;
+}
 
-.dx-logo-lg .dx-logo-badge{width:52px;height:52px;border-radius:11px;}
-.dx-logo-lg .dx-logo-badge svg{width:30px;height:30px;}
-.dx-logo-lg .dx-logo-text{font-size:1.7rem;letter-spacing:-.6px;}
-.dx-logo-lg .dx-logo-sub{font-size:.8rem;}
+/* Rules cards */
+.rules-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  max-width:540px;width:100%;margin:0 auto 28px;
+  animation:fadeUp .4s .15s ease both;
+}
+@media(max-width:520px){.rules-grid{grid-template-columns:1fr 1fr;}}
+.rule-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:14px 12px;text-align:center;
+}
+.rule-icon{font-size:1.4rem;margin-bottom:6px;}
+.rule-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.rule-val{font-weight:800;font-size:.9rem;color:var(--text);}
 
-.dx-logo-sm .dx-logo-badge{width:24px;height:24px;border-radius:5px;}
-.dx-logo-sm .dx-logo-badge svg{width:13px;height:13px;}
-.dx-logo-sm .dx-logo-text{font-size:.82rem;}
-.dx-logo-sm .dx-logo-sub{font-size:.58rem;}
+.btn-start{
+  width:100%;max-width:360px;
+  padding:18px;
+  background:linear-gradient(135deg,var(--brand1),var(--brand2));
+  color:#000;border:none;border-radius:11px;
+  font-family:'Open Sans',sans-serif;font-size:1.05rem;font-weight:800;
+  letter-spacing:.3px;cursor:pointer;
+  transition:all .2s;
+  animation:fadeUp .4s .2s ease both;
+}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(143,195,46,.35);}
+.btn-start:active{transform:translateY(0);}
 
-/* ── HEADER ── */
-.hdr{background:rgba(8,8,8,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;}
-.hdr-brand{flex-shrink:0;}
-.prog-bar{display:flex;align-items:center;gap:6px;flex:1;margin:0 16px;min-width:0;}
-.prog-step{flex:1;height:4px;background:var(--border);border-radius:2px;transition:background .4s;}
-.prog-step.done{background:var(--brand1);}
-.prog-step.active{background:linear-gradient(90deg,var(--brand1),var(--brand2));}
-.hdr-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.spi-pill{font-family:'DM Mono',monospace;font-size:10px;color:var(--brand2);display:flex;align-items:center;gap:5px;}
-.spi-val{font-size:1.1rem;font-weight:500;}
-.team-chip{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:5px;padding:3px 8px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.home-meta{
+  display:flex;justify-content:center;gap:20px;flex-wrap:wrap;
+  margin-top:22px;
+  animation:fadeUp .4s .24s ease both;
+}
+.meta-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;font-size:.68rem;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+}
+.meta-dot{width:5px;height:5px;border-radius:50%;}
 
-/* ── TIMER — large and prominent ── */
-.timer-outer{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;}
-.timer-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
-.timer-wrap{position:relative;width:58px;height:58px;}
+/* ── GAME HEADER ── */
+.game-hdr{
+  background:rgba(8,8,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;gap:12px;
+  flex-shrink:0;
+}
+.hdr-left{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.lives-display{display:flex;align-items:center;gap:6px;}
+.life-icon{font-size:1.3rem;transition:all .3s;display:inline-block;}
+.life-icon.lost{opacity:.4;transform:scale(.8);filter:grayscale(1);}
+@keyframes lifeLost{0%{transform:scale(1.6)}40%{transform:scale(.65)}100%{transform:scale(.8)}}
+.life-icon.losing{animation:lifeLost .35s ease forwards;}
+
+/* Level progress bar */
+.level-prog{display:flex;align-items:center;gap:5px;flex:1;margin:0 14px;min-width:0;}
+.lp-step{
+  flex:1;height:4px;background:var(--border);border-radius:2px;
+  transition:background .4s;
+}
+.lp-step.done{background:var(--brand1);}
+.lp-step.current{background:linear-gradient(90deg,var(--brand1),var(--brand2));}
+
+.hdr-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.score-pill{
+  font-family:'DM Mono',monospace;font-size:.75rem;font-weight:500;
+  color:var(--brand2);
+  display:flex;align-items:center;gap:5px;
+}
+.score-val{font-size:1.1rem;font-weight:500;color:var(--brand1);transition:all .3s;}
+
+/* Pass button in header */
+.btn-pass-hdr{
+  font-family:'DM Mono',monospace;font-size:.68rem;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:5px 12px;
+  background:rgba(136,156,231,.1);border:1px solid rgba(136,156,231,.3);
+  border-radius:100px;color:var(--brand2);cursor:pointer;
+  transition:all .2s;
+}
+.btn-pass-hdr:hover:not(:disabled){
+  background:rgba(136,156,231,.2);
+  box-shadow:0 0 16px rgba(136,156,231,.3);
+}
+.btn-pass-hdr:disabled{opacity:.3;cursor:not-allowed;}
+
+/* Timer ring */
+.timer-outer{display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0;}
+.timer-label-txt{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.timer-wrap{position:relative;width:52px;height:52px;}
 .timer-wrap svg{transform:rotate(-90deg);}
 .timer-bg{fill:none;stroke:var(--border);stroke-width:4;}
-.t-ring{fill:none;stroke:var(--brand1);stroke-width:4;stroke-dasharray:163;stroke-dashoffset:0;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .4s;}
-.t-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-.t-mins{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;line-height:1;}
-.t-secs{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);line-height:1;}
-.timer-urgent .t-ring{stroke:var(--red);}
-.timer-urgent .t-mins{color:var(--red);}
-.timer-urgent{animation:timerpulse 1s ease infinite;}
-@keyframes timerpulse{0%,100%{opacity:1}50%{opacity:.6}}
-
-@media(max-width:600px){
-  .hdr{padding:8px 12px;}
-  .hdr-brand .dx-logo-sub,.team-chip{display:none;}
-  .prog-bar{margin:0 8px;}
-  .timer-wrap{width:48px;height:48px;}
-  .t-mins{font-size:11px;}
+.t-ring{
+  fill:none;stroke:var(--brand1);stroke-width:4;
+  stroke-dasharray:138;stroke-dashoffset:0;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 1s linear,stroke .4s;
 }
+.t-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.t-num{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;line-height:1;}
+.timer-urgent .t-ring{stroke:var(--red);}
+.timer-urgent .t-num{color:var(--red);}
+.timer-urgent{animation:timerpulse 1s ease infinite;}
+@keyframes timerpulse{0%,100%{opacity:1}50%{opacity:.65}}
+
+@media(max-width:580px){
+  .game-hdr{padding:8px 12px;}
+  .level-prog{margin:0 8px;}
+  .timer-wrap{width:44px;height:44px;}
+  .t-num{font-size:12px;}
+}
+
+/* ── GAME BODY ── */
+#s-game{min-height:100vh;}
+.game-body{max-width:640px;margin:0 auto;padding:32px 24px 80px;}
+@media(max-width:580px){.game-body{padding:22px 16px 80px;}}
+
+/* Level badge */
+.level-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 16px 5px 10px;
+  border-radius:100px;border:1px solid;
+  font-family:'DM Mono',monospace;font-size:.72rem;
+  letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.lb-pct{font-size:1.1rem;font-weight:700;}
+.lb-easy{background:rgba(143,195,46,.08);border-color:rgba(143,195,46,.25);color:var(--brand1);}
+.lb-med{background:rgba(136,156,231,.08);border-color:rgba(136,156,231,.25);color:var(--brand2);}
+.lb-hard{background:rgba(255,77,109,.08);border-color:rgba(255,77,109,.25);color:var(--red);}
+.lb-1pct{background:rgba(255,214,10,.08);border-color:rgba(255,214,10,.35);color:var(--gold);}
+
+.category-tag{
+  font-family:'DM Mono',monospace;font-size:.68rem;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+}
+.q-text{
+  font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:800;
+  line-height:1.35;letter-spacing:-.4px;
+  margin-bottom:28px;
+}
+
+/* Answer buttons */
+.answers{display:flex;flex-direction:column;gap:10px;}
+.ans-btn{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:12px;padding:16px 18px;
+  text-align:left;cursor:pointer;
+  transition:all .18s;
+  color:var(--text);
+  font-family:'Open Sans',sans-serif;font-size:.92rem;line-height:1.5;
+  display:flex;align-items:center;gap:12px;
+  width:100%;
+}
+.ans-btn:hover:not(:disabled){
+  border-color:var(--brand2);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(136,156,231,.12);
+}
+.ans-btn:disabled{cursor:default;}
+.ans-btn.correct{
+  border-color:var(--brand1);
+  background:rgba(143,195,46,.1);
+}
+.ans-btn.wrong{
+  border-color:var(--red);
+  background:rgba(255,77,109,.08);
+}
+.ans-key{
+  font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;
+  width:26px;height:26px;border-radius:6px;
+  background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .18s;
+}
+.ans-btn.correct .ans-key{background:var(--brand1);color:#000;}
+.ans-btn.wrong .ans-key{background:var(--red);color:#fff;}
+
+/* Feedback bar */
+.feedback-bar{
+  margin-top:18px;
+  padding:14px 18px;border-radius:10px;
+  font-size:.9rem;font-weight:700;line-height:1.5;
+  opacity:0;transition:opacity .3s;
+}
+.feedback-bar.show{opacity:1;}
+.feedback-bar.correct{background:rgba(143,195,46,.1);border:1px solid rgba(143,195,46,.3);color:var(--brand1);}
+.feedback-bar.wrong{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.3);color:var(--red);}
+.feedback-bar.timeout{background:rgba(255,149,0,.08);border:1px solid rgba(255,149,0,.3);color:var(--orange);}
+
+/* Next button */
+.btn-next{
+  width:100%;margin-top:14px;
+  padding:15px;
+  background:linear-gradient(135deg,var(--brand1),var(--brand2));
+  color:#000;border:none;border-radius:10px;
+  font-family:'Open Sans',sans-serif;font-size:.95rem;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  display:none;
+}
+.btn-next.show{display:block;}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(143,195,46,.3);}
+
+/* Streak banner */
+.streak-banner{
+  position:fixed;top:90px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,rgba(143,195,46,.9),rgba(136,156,231,.9));
+  color:#000;padding:8px 22px;border-radius:100px;
+  font-weight:800;font-size:.85rem;letter-spacing:.3px;
+  z-index:200;
+  opacity:0;transition:opacity .3s;
+  pointer-events:none;white-space:nowrap;
+}
+.streak-banner.show{opacity:1;}
+
+/* Bonus popup */
+.bonus-pop{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);
+  background:var(--card);border:1px solid var(--brand1);
+  border-radius:16px;padding:20px 32px;text-align:center;
+  z-index:300;opacity:0;pointer-events:none;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.bonus-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.bonus-num{font-size:2.5rem;font-weight:800;color:var(--brand1);}
+.bonus-label{font-family:'DM Mono',monospace;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+/* ── GAME OVER SCREEN ── */
+#s-over{
+  min-height:100vh;
+  align-items:center;justify-content:center;
+  text-align:center;padding:48px 24px;
+}
+.over-icon{font-size:4rem;margin-bottom:14px;animation:popIn .5s ease both;}
+.over-h{font-size:clamp(2rem,5vw,3rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;animation:fadeUp .4s .1s ease both;}
+.over-sub{font-size:.9rem;color:var(--muted);margin-bottom:28px;animation:fadeUp .4s .15s ease both;line-height:1.7;}
+.results-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:24px;max-width:400px;width:100%;
+  margin:0 auto 28px;
+  animation:fadeUp .4s .2s ease both;
+}
+.rc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.rc-row:last-child{border-bottom:none;}
+.rc-label{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.rc-value{font-weight:800;font-size:1rem;}
+.rc-value.big{font-size:1.6rem;color:var(--brand1);}
+
+.compare-msg{
+  font-size:.85rem;color:var(--muted);
+  margin-bottom:22px;line-height:1.7;
+  max-width:400px;
+  animation:fadeUp .4s .25s ease both;
+}
+.compare-msg strong{color:var(--text);}
+.btn-replay{
+  width:100%;max-width:360px;
+  padding:17px;
+  background:linear-gradient(135deg,var(--brand1),var(--brand2));
+  color:#000;border:none;border-radius:11px;
+  font-family:'Open Sans',sans-serif;font-size:1rem;font-weight:800;
+  cursor:pointer;transition:all .2s;
+  animation:fadeUp .4s .3s ease both;
+  margin-bottom:32px;
+}
+.btn-replay:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(143,195,46,.35);}
+
+/* ── WIN SCREEN ── */
+#s-win{
+  min-height:100vh;
+  align-items:center;justify-content:center;
+  text-align:center;padding:48px 24px;
+  background:radial-gradient(ellipse at center,rgba(143,195,46,.06) 0%,transparent 70%);
+}
+.win-icon{font-size:5rem;margin-bottom:12px;animation:popIn .5s ease both;}
+.win-h{
+  font-size:clamp(2.2rem,5.5vw,3.4rem);font-weight:800;letter-spacing:-1.8px;
+  margin-bottom:10px;
+  animation:fadeUp .4s .1s ease both;
+}
+.win-h em{
+  background:linear-gradient(90deg,var(--gold),var(--brand1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-style:normal;
+}
+.win-sub{font-size:.95rem;color:var(--muted);line-height:1.8;max-width:420px;margin:0 auto 28px;animation:fadeUp .4s .15s ease both;}
+.confetti-bar{
+  display:flex;justify-content:center;gap:4px;
+  margin-bottom:24px;animation:fadeUp .4s .2s ease both;
+}
+.confetti-dot{
+  width:8px;height:8px;border-radius:50%;
+  animation:confettiPop .6s ease both;
+}
+@keyframes confettiPop{from{transform:scale(0)}to{transform:scale(1)}}
 
 /* ── FOOTER ── */
-.footer{text-align:center;padding:20px 24px 28px;font-family:'Open Sans',sans-serif;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:44px;line-height:1.9;}
+.footer{
+  text-align:center;padding:20px 24px 28px;
+  font-size:.73rem;color:var(--muted);
+  border-top:1px solid var(--border);margin-top:auto;
+  line-height:1.9;
+  position:relative;z-index:1;
+}
 .footer a{color:var(--brand2);text-decoration:none;font-weight:600;}
 .footer a:hover{color:var(--brand1);}
-.footer-sep{margin:0 10px;opacity:.3;}
-.footer-admin-link{opacity:.4;}
-.footer-admin-link:hover{opacity:1;}
 
-/* ── HOME ── */
-#s-home{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px 60px;}
-.home-logo{margin-bottom:6px;animation:fadeUp .5s ease both;}
-.home-tagline{font-size:.75rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:30px;animation:fadeUp .4s .06s ease both;}
-.home-h{font-size:clamp(2.4rem,6vw,3.8rem);font-weight:800;letter-spacing:-1.8px;line-height:1.04;margin-bottom:14px;animation:fadeUp .4s .1s ease both;}
-.home-h em{background:linear-gradient(90deg,var(--brand1),var(--brand2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;}
-.home-sub{color:var(--muted);font-size:.97rem;line-height:1.75;max-width:460px;margin:0 auto 10px;animation:fadeUp .4s .13s ease both;}
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes scoreFlash{0%,100%{color:var(--brand1)}50%{color:var(--gold)}}
+.score-flash{animation:scoreFlash .4s ease;}
 
-/* SPI definition */
-.spi-explain{background:var(--card);border:1px solid rgba(136,156,231,.25);border-radius:12px;padding:15px 20px;max-width:460px;width:100%;text-align:left;margin-bottom:20px;animation:fadeUp .4s .15s ease both;}
-.spi-explain-hd{font-family:'Open Sans',sans-serif;font-size:.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--brand2);margin-bottom:6px;}
-.spi-explain-body{font-size:.82rem;color:var(--muted);line-height:1.65;}
-.spi-explain-body strong{color:var(--text);}
+/* Slide-in for questions */
+.q-enter{animation:qEnter .35s ease both;}
+@keyframes qEnter{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 
-.scenario-card{background:var(--card);border:1px solid rgba(143,195,46,.18);border-radius:14px;padding:20px 22px;max-width:460px;width:100%;text-align:left;margin-bottom:22px;animation:fadeUp .4s .18s ease both;}
-.sc-label{font-size:.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--brand1);margin-bottom:8px;}
-.sc-title{font-weight:800;font-size:1.05rem;margin-bottom:6px;}
-.sc-body{font-size:.83rem;color:var(--muted);line-height:1.65;}
-.sc-body strong{color:var(--text);}
+/* Shake on wrong */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .3s ease;}
 
-.reg-form{width:100%;max-width:460px;display:flex;flex-direction:column;gap:10px;animation:fadeUp .4s .21s ease both;}
-.reg-in{width:100%;padding:15px 18px;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;font-family:'Open Sans',sans-serif;font-size:1rem;color:var(--text);outline:none;transition:border-color .2s;text-align:center;}
-.reg-in:focus{border-color:var(--brand2);}
-.reg-in::placeholder{color:var(--muted);}
-.reg-members{height:52px;resize:none;line-height:1.4;font-size:.88rem;}
-.btn-launch{padding:18px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:9px;font-family:'Open Sans',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:all .2s;}
-.btn-launch:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(143,195,46,.3);}
-.home-meta{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:22px;animation:fadeUp .4s .25s ease both;}
-.meta-item{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
-.meta-dot{width:6px;height:6px;border-radius:50%;}
-
-/* ── GAME ── */
-#s-game{min-height:100vh;}
-.game-body{max-width:820px;margin:0 auto;padding:32px 26px 110px;}
-@media(max-width:580px){.game-body{padding:20px 14px 110px;}}
-
-.phase-pill{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;border:1px solid;}
-.phase-pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-.ph1{background:rgba(143,195,46,.08);border-color:rgba(143,195,46,.3);color:var(--brand1);}
-.ph2{background:rgba(136,156,231,.08);border-color:rgba(136,156,231,.3);color:var(--brand2);}
-.ph3{background:rgba(143,195,46,.06);border-color:rgba(143,195,46,.25);color:var(--brand1);}
-
-.qblock{margin-bottom:34px;}
-.q-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-.q-text{font-size:clamp(1.1rem,2.4vw,1.5rem);font-weight:800;line-height:1.3;margin-bottom:8px;letter-spacing:-.5px;}
-.q-ctx{background:rgba(136,156,231,.05);border:1px solid rgba(136,156,231,.15);border-radius:9px;padding:12px 16px;margin-bottom:18px;font-size:.85rem;color:#aab;line-height:1.65;}
-.q-ctx strong{color:var(--brand2);}
-
-/* ── SINGLE SELECT ── */
-.sel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:500px){.sel-grid{grid-template-columns:1fr;}}
-.sel-btn{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 16px;text-align:left;cursor:pointer;transition:all .17s;color:var(--text);font-family:'Open Sans',sans-serif;font-size:.87rem;line-height:1.5;display:flex;align-items:flex-start;gap:10px;width:100%;}
-.sel-btn:hover{border-color:var(--brand2);transform:translateY(-1px);}
-.sel-btn.active{border-color:var(--brand1);background:rgba(143,195,46,.07);}
-.sel-btn.active .s-key{background:var(--brand1);color:#000;}
-.s-key{font-family:'DM Mono',monospace;font-size:10px;width:22px;height:22px;border-radius:5px;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .17s;margin-top:1px;}
-
-/* ── MULTI SELECT ── */
-.multi-grid{display:flex;flex-direction:column;gap:8px;}
-.multi-btn{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:12px 16px;cursor:pointer;transition:all .17s;color:var(--text);font-family:'Open Sans',sans-serif;font-size:.86rem;display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;}
-.multi-btn:hover{border-color:var(--brand2);}
-.multi-btn.active{border-color:var(--brand1);background:rgba(143,195,46,.07);}
-.multi-btn.active .m-check{background:var(--brand1);border-color:var(--brand1);}
-.m-check{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);flex-shrink:0;transition:all .17s;display:flex;align-items:center;justify-content:center;}
-.m-check svg{display:none;width:11px;height:11px;}
-.multi-btn.active .m-check svg{display:block;}
-.m-info{display:flex;flex-direction:column;gap:2px;}
-.m-name{font-weight:700;}
-.m-desc{font-size:.78rem;color:var(--muted);}
-
-/* Channel role toggle — per channel */
-.ch-role{display:flex;gap:0;flex-shrink:0;}
-.role-btn{font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;font-weight:600;letter-spacing:.5px;}
-.role-btn:first-child{border-radius:6px 0 0 6px;border-right:none;}
-.role-btn:last-child{border-radius:0 6px 6px 0;}
-.role-btn.ra.sel{background:var(--brand2);border-color:var(--brand2);color:#000;}
-.role-btn.rr.sel{background:var(--brand1);border-color:var(--brand1);color:#000;}
-
-/* ── SLIDER with value-in-thumb ── */
-.slider-wrap{margin-bottom:6px;}
-.slider-row{display:flex;align-items:center;gap:16px;}
-.slider-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:14px;text-align:center;}
-.custom-slider-track{position:relative;flex:1;height:6px;background:var(--border);border-radius:3px;cursor:pointer;}
-.custom-slider-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--brand1),var(--brand2));border-radius:3px;pointer-events:none;}
-.custom-slider-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--brand1),var(--brand2));display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#000;box-shadow:0 2px 8px rgba(143,195,46,.35);cursor:grab;user-select:none;transition:box-shadow .2s;}
-.custom-slider-thumb:active{cursor:grabbing;box-shadow:0 4px 16px rgba(143,195,46,.5);}
-.hidden-slider{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer;}
-
-/* ── RISK CARDS ── */
-.risk-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-@media(max-width:480px){.risk-row{grid-template-columns:1fr;}}
-.risk-card{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:16px;cursor:pointer;transition:all .18s;}
-.risk-card:hover{transform:translateY(-2px);}
-.risk-card.rc-safe.active{border-color:var(--brand2);background:rgba(136,156,231,.07);}
-.risk-card.rc-bal.active{border-color:var(--brand1);background:rgba(143,195,46,.07);}
-.risk-card.rc-bold.active{border-color:#ff9500;background:rgba(255,149,0,.07);}
-.rc-name{font-weight:800;font-size:.95rem;margin-bottom:4px;}
-.rc-desc{font-size:.81rem;color:var(--muted);line-height:1.5;}
-.rc-badge{font-family:'DM Mono',monospace;font-size:9px;margin-top:10px;display:inline-block;padding:2px 8px;border-radius:100px;}
-.rc-safe .rc-badge{background:rgba(136,156,231,.12);color:var(--brand2);}
-.rc-bal .rc-badge{background:rgba(143,195,46,.1);color:var(--brand1);}
-.rc-bold .rc-badge{background:rgba(255,149,0,.12);color:#ff9500;}
-
-/* ── TEXTAREA ── */
-.ft-area{width:100%;padding:13px 15px;background:var(--surface);border:1.5px solid var(--border);border-radius:9px;font-size:.87rem;font-family:'Open Sans',sans-serif;color:var(--text);resize:none;outline:none;line-height:1.65;transition:border-color .2s;}
-.ft-area:focus{border-color:var(--brand2);}
-.ft-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:right;margin-top:4px;}
-.ft-count.warn{color:var(--red);}
-
-/* ── BOTTOM BAR ── */
-.bbar{position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,6,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;z-index:60;}
-.bbar-status{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
-.bbar-status.ok{color:var(--brand1);}
-.bbar-btns{display:flex;gap:8px;}
-.btn-submit{background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;padding:12px 28px;font-size:.9rem;font-weight:800;font-family:'Open Sans',sans-serif;border-radius:7px;cursor:pointer;transition:all .2s;}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(143,195,46,.3);}
-.btn-next{background:var(--brand2);color:#000;border:none;padding:12px 28px;font-size:.9rem;font-weight:800;font-family:'Open Sans',sans-serif;border-radius:7px;cursor:pointer;transition:all .2s;display:none;}
-.btn-next.on{display:inline-block;}
-.btn-next:hover{transform:translateY(-2px);}
-@media(max-width:580px){
-  .bbar{padding:8px 12px;flex-wrap:wrap;}
-  .bbar-status{font-size:10px;width:100%;text-align:center;order:-1;}
-  .bbar-btns{width:100%;display:flex;gap:8px;}
-  .btn-submit,.btn-next{flex:1;padding:11px 10px;font-size:.82rem;}
+/* Mobile adjustments */
+@media(max-width:480px){
+  .rules-grid{grid-template-columns:repeat(3,1fr);}
+  .rule-card{padding:10px 8px;}
+  .rule-icon{font-size:1.2rem;}
 }
-
-/* ── MODAL ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(10px);}
-.modal-bg.on{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;max-width:360px;width:92%;}
-.modal-h{font-weight:800;font-size:1.1rem;margin-bottom:6px;}
-.modal-b{font-size:.86rem;color:var(--muted);line-height:1.6;margin-bottom:20px;}
-.modal-row{display:flex;gap:8px;justify-content:flex-end;}
-.btn-cancel{padding:9px 18px;border-radius:7px;border:1.5px solid var(--border);background:transparent;font-family:'Open Sans',sans-serif;font-size:.86rem;color:var(--text);cursor:pointer;}
-.btn-confirm{padding:9px 18px;border-radius:7px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;font-family:'Open Sans',sans-serif;font-size:.86rem;font-weight:800;cursor:pointer;}
-
-/* tooltip modal */
-.tip-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(8px);}
-.tip-bg.on{display:flex;}
-.tip-box{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:26px 28px;max-width:380px;width:92%;}
-.tip-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--brand2);margin-bottom:8px;}
-.tip-title{font-weight:800;font-size:1.1rem;margin-bottom:10px;}
-.tip-body{font-size:.86rem;color:var(--muted);line-height:1.65;margin-bottom:18px;}
-.tip-body strong{color:var(--text);}
-.tip-close{padding:9px 22px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:7px;font-family:'Open Sans',sans-serif;font-size:.86rem;font-weight:800;cursor:pointer;}
-
-/* flash */
-.flash{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%);font-family:'Open Sans',sans-serif;font-size:2.6rem;font-weight:800;background:linear-gradient(90deg,var(--brand1),var(--brand2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;pointer-events:none;z-index:999;display:none;}
-
-/* ── REVEAL ── */
-#s-reveal{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px;}
-.reveal-eye{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
-.reveal-h{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-1px;margin-bottom:36px;}
-.reveal-calc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;max-width:520px;width:100%;margin-bottom:18px;text-align:left;}
-.calc-section{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;margin-top:18px;}
-.calc-section:first-child{margin-top:0;}
-.calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.87rem;}
-.calc-row:last-child{border-bottom:none;}
-.calc-row.total{padding-top:13px;margin-top:4px;border-top:1px solid var(--border);font-weight:800;font-size:.98rem;}
-.calc-label{color:var(--muted);}
-.calc-val{font-family:'DM Mono',monospace;font-weight:500;}
-/* CPA: positive modifier = bad (red), negative = good (green) */
-.calc-val.cpa-good{color:var(--brand1);}   /* modifier reduces CPA = green */
-.calc-val.cpa-bad{color:var(--red);}        /* modifier increases CPA = red */
-.calc-val.neutral{color:var(--text);}
-.calc-val.profit-pos{color:var(--brand1);}
-.calc-val.profit-neg{color:var(--red);}
-.calc-sep{border:none;border-top:1px solid var(--border);margin:16px 0;}
-.profit-banner{padding:18px 22px;border-radius:12px;max-width:520px;width:100%;margin-bottom:18px;text-align:center;}
-.profit-banner.win{background:rgba(143,195,46,.08);border:1px solid rgba(143,195,46,.3);}
-.profit-banner.loss{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.3);}
-.pban-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-.pban-label.win{color:var(--brand1);}.pban-label.loss{color:var(--red);}
-.pban-num{font-size:2.4rem;font-weight:800;letter-spacing:-1px;}
-.pban-num.win{color:var(--brand1);}.pban-num.loss{color:var(--red);}
-.pban-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px;}
-.btn-reveal-spi{margin-top:8px;padding:15px 40px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:9px;font-family:'Open Sans',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:all .2s;}
-.btn-reveal-spi:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(143,195,46,.3);}
-
-/* ── RESULTS ── */
-#s-results{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px 80px;}
-.res-trophy{font-size:3.8rem;margin-bottom:14px;animation:bounce .7s ease;}
-.res-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.res-title{font-size:clamp(1.7rem,4vw,2.7rem);font-weight:800;letter-spacing:-1px;margin-bottom:4px;}
-.res-team{color:var(--muted);font-size:.9rem;margin-bottom:24px;}
-.spi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:100%;margin-bottom:16px;}
-.spi-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.spi-big{font-size:4.5rem;font-weight:800;letter-spacing:-3px;background:linear-gradient(90deg,var(--brand1),var(--brand2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
-.spi-max{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-top:4px;}
-.perf-band{display:inline-block;margin-top:12px;padding:7px 18px;border-radius:100px;font-weight:800;font-size:.84rem;}
-.band-leader{background:rgba(143,195,46,.1);border:1px solid rgba(143,195,46,.4);color:var(--brand1);}
-.band-op{background:rgba(136,156,231,.1);border:1px solid rgba(136,156,231,.35);color:var(--brand2);}
-.band-fragile{background:rgba(255,165,0,.1);border:1px solid rgba(255,165,0,.35);color:orange;}
-.band-vd{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.35);color:var(--red);}
-
-/* Score grid with ? tooltips */
-.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:460px;width:100%;margin-bottom:16px;}
-@media(max-width:440px){.score-grid{grid-template-columns:1fr;}}
-.sc-cell{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;text-align:left;position:relative;}
-.sc-cell-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:5px;}
-.sc-help{width:14px;height:14px;border-radius:50%;background:var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-family:sans-serif;color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .15s;}
-.sc-help:hover{background:var(--brand2);color:#000;}
-.sc-cell-val{font-size:1.35rem;font-weight:800;}
-.sc-cell-sub{font-size:.73rem;color:var(--muted);margin-top:2px;}
-
-.badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:100px;font-size:.77rem;font-weight:800;border:1px solid;}
-.bd-green{color:var(--brand1);border-color:rgba(143,195,46,.35);background:rgba(143,195,46,.07);}
-.bd-purple{color:var(--brand2);border-color:rgba(136,156,231,.35);background:rgba(136,156,231,.07);}
-.bd-red{color:var(--red);border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.07);}
-
-.btn-go-lb{padding:13px 32px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:8px;font-family:'Open Sans',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:all .2s;margin-top:6px;}
-.btn-go-lb:hover{transform:translateY(-2px);}
-.btn-restart{padding:11px 28px;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-family:'Open Sans',sans-serif;font-size:.9rem;font-weight:700;color:var(--text);cursor:pointer;transition:all .2s;margin-top:8px;display:block;width:100%;max-width:200px;}
-.btn-restart:hover{border-color:var(--brand1);color:var(--brand1);}
-
-/* ── LEADERBOARD ── */
-#s-leader{min-height:100vh;padding:0 0 60px;}
-.lb-wrap{max-width:760px;margin:0 auto;padding:44px 24px;}
-.lb-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
-.lb-h{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:6px;}
-.lb-h span{background:linear-gradient(90deg,var(--brand1),var(--brand2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.lb-sub{color:var(--muted);font-size:.88rem;margin-bottom:28px;}
-.lb-table{width:100%;border-collapse:collapse;}
-.lb-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);}
-.lb-table td{padding:12px 12px;border-bottom:1px solid rgba(42,42,54,.5);font-size:.87rem;vertical-align:middle;}
-.lb-table tr:last-child td{border-bottom:none;}
-.lb-rank{font-size:1.2rem;font-weight:800;width:40px;}
-.lb-rank.r1{color:var(--brand1);}.lb-rank.r2{color:#c0c0d0;}.lb-rank.r3{color:#cd8f32;}
-.lb-spi{font-family:'DM Mono',monospace;font-size:1rem;font-weight:500;color:var(--brand1);}
-.lb-profit{font-family:'DM Mono',monospace;font-size:.84rem;}
-.lb-profit.pos{color:var(--brand1);}.lb-profit.neg{color:var(--red);}
-.risk-tag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 9px;border-radius:100px;border:1px solid;}
-.rt-safe{color:var(--brand2);border-color:rgba(136,156,231,.4);background:rgba(136,156,231,.08);}
-.rt-bal{color:var(--brand1);border-color:rgba(143,195,46,.4);background:rgba(143,195,46,.08);}
-.rt-bold{color:#ff9500;border-color:rgba(255,149,0,.4);background:rgba(255,149,0,.08);}
-.lb-empty{text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem;}
-.btn-lb-back{margin-top:24px;padding:13px 28px;background:var(--brand2);color:#000;border:none;border-radius:8px;font-family:'Open Sans',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s;}
-.btn-lb-back:hover{transform:translateY(-2px);}
-
-/* ── REFLECT ── */
-#s-reflect{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px 80px;}
-.ref-icon{font-size:2.5rem;margin-bottom:14px;}
-.ref-h{font-size:1.6rem;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
-.ref-sub{color:var(--muted);font-size:.88rem;line-height:1.65;max-width:420px;margin:0 auto 26px;}
-.ref-prompts{display:flex;flex-direction:column;gap:10px;max-width:480px;width:100%;margin-bottom:26px;}
-.ref-prompt{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px 18px;text-align:left;font-size:.86rem;line-height:1.6;color:#bbb;}
-.ref-prompt strong{color:var(--text);display:block;margin-bottom:3px;}
-
-/* ── ADMIN LOGIN ── */
-#s-login{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;}
-.login-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:36px;max-width:340px;width:92%;text-align:center;}
-.login-icon{font-size:2rem;margin-bottom:14px;}
-.login-h{font-weight:800;font-size:1.3rem;margin-bottom:6px;}
-.login-sub{color:var(--muted);font-size:.83rem;margin-bottom:24px;line-height:1.5;}
-.login-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;text-align:left;margin-bottom:5px;}
-.login-in{width:100%;padding:10px 13px;background:var(--surface);border:1.5px solid var(--border);border-radius:7px;font-family:'Open Sans',sans-serif;font-size:.9rem;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:10px;}
-.login-in:focus{border-color:var(--brand2);}
-.login-err{color:var(--red);font-size:.82rem;margin-bottom:12px;display:none;}
-.login-err.on{display:block;}
-.btn-login-go{width:100%;padding:11px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:7px;font-family:'Open Sans',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;}
-.btn-login-go:hover{opacity:.9;}
-
-/* ── ADMIN ── */
-#s-admin{min-height:100vh;padding:0 0 60px;}
-.adm-wrap{max-width:860px;margin:0 auto;padding:44px 24px;}
-.adm-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--brand1);margin-bottom:12px;}
-.adm-h{font-size:2.2rem;font-weight:800;letter-spacing:-1px;margin-bottom:6px;}
-.adm-sub{color:var(--muted);font-size:.87rem;margin-bottom:28px;}
-.adm-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
-@media(max-width:580px){.adm-actions{grid-template-columns:1fr;}}
-.adm-btn{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:18px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-family:'Open Sans',sans-serif;}
-.adm-btn:hover{transform:translateY(-2px);border-color:var(--brand1);}
-.adm-btn.danger:hover{border-color:var(--red);}
-.adm-btn-icon{font-size:1.4rem;margin-bottom:8px;}
-.adm-btn-lbl{font-weight:800;font-size:.9rem;margin-bottom:3px;}
-.adm-btn.danger .adm-btn-lbl{color:var(--red);}
-.adm-btn-desc{font-size:.79rem;color:var(--muted);line-height:1.45;}
-.adm-section{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px;margin-bottom:18px;}
-.adm-sh{font-weight:800;font-size:.95rem;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-.adm-table{width:100%;border-collapse:collapse;font-size:.83rem;}
-.adm-table th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
-.adm-table td{padding:10px 10px;border-bottom:1px solid rgba(42,42,54,.4);vertical-align:top;}
-.adm-table tr:last-child td{border-bottom:none;}
-.adm-spi{color:var(--brand1);font-family:'DM Mono',monospace;font-weight:500;}
-.confirm-del{background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.3);border-radius:9px;padding:14px 16px;margin-top:12px;display:none;}
-.confirm-del.on{display:block;}
-.confirm-del p{font-size:.86rem;color:var(--muted);margin-bottom:12px;}
-.btn-del-ok{background:var(--red);color:#fff;border:none;padding:9px 20px;font-size:.84rem;font-weight:800;font-family:'Open Sans',sans-serif;border-radius:7px;cursor:pointer;margin-right:8px;}
-.btn-del-cancel{background:transparent;border:1.5px solid var(--border);color:var(--text);padding:9px 18px;font-size:.84rem;font-family:'Open Sans',sans-serif;border-radius:7px;cursor:pointer;}
-
-
-/* Home logo image */
-.home-logo-img{
-  width:300px;max-width:88vw;height:auto;
-  filter: invert(1) hue-rotate(180deg) saturate(1.3);
-}
-/* ── BRIEF PANEL ── */
-.brief-panel{background:var(--card);border:1px solid rgba(143,195,46,.2);border-radius:12px;margin-bottom:18px;overflow:hidden;}
-.brief-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;}
-.brief-toggle-left{display:flex;align-items:center;gap:8px;font-family:'Open Sans',sans-serif;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--brand1);}
-.brief-chevron{font-size:.7rem;color:var(--muted);transition:transform .25s;}
-.brief-panel.open .brief-chevron{transform:rotate(180deg);}
-.brief-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border);}
-.brief-panel.open .brief-body{display:block;}
-.brief-scenario{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:10px;padding-top:12px;}
-.brief-scenario strong{color:var(--text);}
-.brief-econ{background:rgba(143,195,46,.07);border:1px solid rgba(143,195,46,.15);border-radius:8px;padding:10px 13px;font-size:.8rem;color:var(--muted);line-height:1.7;}
-.brief-econ strong{color:var(--text);}
-/* ── DECISION SUMMARY ── */
-.dec-strip{background:var(--card);border:1px solid rgba(136,156,231,.2);border-radius:12px;margin-bottom:18px;overflow:hidden;}
-.dec-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;}
-.dec-toggle-left{display:flex;align-items:center;gap:8px;font-family:'Open Sans',sans-serif;font-size:.75rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--brand2);}
-.dec-chevron{font-size:.7rem;color:var(--muted);transition:transform .25s;}
-.dec-strip.open .dec-chevron{transform:rotate(180deg);}
-.dec-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border);}
-.dec-strip.open .dec-body{display:block;}
-.dec-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem;}
-.dec-row:last-child{border-bottom:none;}
-.dec-lbl{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);flex-shrink:0;min-width:100px;padding-top:1px;}
-.dec-val{color:var(--text);font-weight:700;}
-
-/* ── RANK LIST ── */
-.rank-list{list-style:none;padding:0;margin:12px 0 0;}
-.rank-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;margin-bottom:8px;cursor:grab;user-select:none;transition:border-color .2s,background .2s;}
-.rank-item:active{cursor:grabbing;}
-.rank-item.drag-over{border-color:var(--brand2);background:rgba(136,156,231,.08);}
-.rank-handle{color:var(--muted);font-size:1.1rem;flex-shrink:0;letter-spacing:-2px;}
-.rank-num{font-family:'DM Mono',monospace;font-size:.75rem;font-weight:700;color:var(--brand2);background:rgba(136,156,231,.12);border-radius:5px;padding:2px 7px;flex-shrink:0;}
-.rank-lbl{font-size:.88rem;color:var(--text);line-height:1.45;}
-/* animations */
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-@keyframes pop{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}60%{opacity:1;transform:translate(-50%,-65%) scale(1.22)}100%{opacity:0;transform:translate(-50%,-100%) scale(.8)}}
 </style>
 </head>
 <body>
 
-<!-- ── FLASH ── -->
-<div class="flash" id="flash"></div>
-
-<!-- ── SUBMIT CONFIRM MODAL ── -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <div class="modal-h">Submit Phase?</div>
-    <div class="modal-b">Your answers will be locked. The next phase will load immediately.</div>
-    <div class="modal-row">
-      <button class="btn-cancel" onclick="closeModal()">Review first</button>
-      <button class="btn-confirm" onclick="closeModal();doSubmit()">Submit & Continue →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── TOOLTIP MODAL ── -->
-<div class="tip-bg" id="tipBg">
-  <div class="tip-box">
-    <div class="tip-label" id="tipLabel"></div>
-    <div class="tip-title" id="tipTitle"></div>
-    <div class="tip-body" id="tipBody"></div>
-    <button class="tip-close" onclick="closeTip()">Got it</button>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     HOME SCREEN
-══════════════════════════════════════ -->
-<div id="s-home" class="screen on">
-  <!-- Logo -->
+<!-- ═══════════════ HOME ═══════════════ -->
+<section id="s-home" class="screen on">
   <div class="home-logo">
-  <div class="dx-logo dx-logo-lg">
-    <div class="dx-logo-badge">
-      <svg viewBox="0 0 18 18" fill="none"><text x="1" y="14" font-family="'Open Sans',sans-serif" font-weight="800" font-size="13" fill="#000">dx</text></svg>
-    </div>
-    <div class="dx-logo-stack">
-      <div class="dx-logo-text">Digital<span>Xperience</span>.ai</div>
-      <div class="dx-logo-sub">Strategy Lab</div>
-    </div>
-  </div>
-  </div>
-  <div class="home-tagline">Mobile Strategy Decision Game</div>
-  <h1 class="home-h">Think Mobile.<br><em>Open Day Edition</em></h1>
-  <p class="home-sub">NourishBox is a UK subscription company delivering healthy snack boxes. Growth has slowed. Advertising costs are rising. Many customers cancel early.<br><br>Your task: build a profitable mobile-first strategy.</p>
-
-  <div class="scenario-card">
-    <div class="sc-label">📋 Economic Constraints</div>
-    <div class="sc-title">NourishBox</div>
-    <div class="sc-body">Monthly fee: <strong>£25</strong> &nbsp;·&nbsp; Gross margin: <strong>60%</strong> &nbsp;·&nbsp; Monthly profit contribution: <strong>£15</strong><br>LTV = £15 × months retained &nbsp;·&nbsp; Profit = LTV − Final CPA<br>Your decisions shift both CPA and retention. Make them count.</div>
-  </div>
-
-  <!-- SPI definition -->
-  <div class="spi-explain">
-    <div class="spi-explain-hd">What's the aim of the game?</div>
-    <div class="spi-explain-body">
-      The <strong>Strategy Performance Index (SPI)</strong> is your score out of 120. It measures how well your decisions drive profitable, sustainable growth. It combines your <strong>financial outcome</strong> (profit per customer), <strong>retention quality</strong> (months kept), <strong>strategic alignment</strong> (do your choices reinforce each other?), <strong>risk calibration</strong> (does your risk level match your result?), your <strong>written reasoning</strong>, and deducts points for poor execution decisions.
-    </div>
-  </div>
-
-  <div class="reg-form">
-    <input type="text" class="reg-in" id="teamIn" placeholder="Your name" maxlength="40" autocomplete="off">
-    <textarea class="reg-in reg-members" id="membersIn" placeholder="Team members (optional)" maxlength="120" style="display:none"></textarea>
-    <button class="btn-launch" id="startBtn">Launch Game →</button>
-  </div>
-
-  <div style="text-align:center;margin-bottom:20px"><span style="display:inline-block;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;font-family:'Open Sans',sans-serif;font-weight:800;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;padding:5px 16px;border-radius:20px;">&#127891; Open Day Edition</span></div>
-  <div class="home-meta">
-    <div class="meta-item"><div class="meta-dot" style="background:var(--brand1)"></div>3 Timed Phases</div>
-    <div class="meta-item"><div class="meta-dot" style="background:var(--brand2)"></div>5 Min Each</div>
-    <div class="meta-item"><div class="meta-dot" style="background:var(--brand1)"></div>SPI Max 120</div>
-    <div class="meta-item"><div class="meta-dot" style="background:var(--brand2)"></div>Live Leaderboard</div>
-  </div>
-
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="?admin" class="footer-admin-link">Facilitator Admin</a>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     GAME SCREEN
-══════════════════════════════════════ -->
-<div id="s-game" class="screen">
-  <!-- Header -->
-  <div class="hdr">
-    <div class="hdr-brand">
-      <div class="dx-logo dx-logo-sm">
-        <div class="dx-logo-badge">
-          <svg viewBox="0 0 18 18" fill="none"><text x="1" y="14" font-family="'Open Sans',sans-serif" font-weight="800" font-size="13" fill="#000">dx</text></svg>
-        </div>
-        <div class="dx-logo-stack">
-          <div class="dx-logo-text">Digital<span>Xperience</span>.ai</div>
-        </div>
+    <div class="dx-logo dx-logo-lg" style="flex-direction:column;align-items:center;gap:10px;">
+      <div class="dx-logo-badge" style="width:54px;height:54px;border-radius:12px;">
+        <svg viewBox="0 0 18 18" fill="none"><text x="1" y="14" font-family="'Open Sans',sans-serif" font-weight="800" font-size="13" fill="#000">dx</text></svg>
+      </div>
+      <div class="dx-logo-stack" style="text-align:center;">
+        <span class="dx-logo-text" style="font-size:1rem;">Digital<span>Xperience</span>.ai</span>
+        <span class="dx-logo-sub" style="text-align:center;">Strategy Lab</span>
       </div>
     </div>
-    <div class="prog-bar">
-      <div class="prog-step active" id="ps1"></div>
-      <div class="prog-step" id="ps2"></div>
-      <div class="prog-step" id="ps3"></div>
+  </div>
+
+  <div class="home-badge">
+    <span>🏆</span> Elite Digital Marketing Challenge
+  </div>
+
+  <h1 class="home-h">Are you a<br><em>Top Tier Marketer?</em></h1>
+
+  <p class="home-sub">
+    10 questions. 10 levels. Only the sharpest digital marketers make it to the end.
+    Do you have what it takes?
+  </p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-icon">❤️</div>
+      <div class="rule-label">Lives</div>
+      <div class="rule-val">2 Lives</div>
     </div>
+    <div class="rule-card">
+      <div class="rule-icon">🎟️</div>
+      <div class="rule-label">Pass</div>
+      <div class="rule-val">1 Pass</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">⏱️</div>
+      <div class="rule-label">Timer</div>
+      <div class="rule-val">45 sec</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🔢</div>
+      <div class="rule-label">Levels</div>
+      <div class="rule-val">Easy → Elite</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🔥</div>
+      <div class="rule-label">Streak</div>
+      <div class="rule-val">Bonus pts</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">⚡</div>
+      <div class="rule-label">Speed</div>
+      <div class="rule-val">+10 pts</div>
+    </div>
+  </div>
+
+  <div class="mode-toggle">
+    <span class="toggle-icon">🌙</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="modeToggle" onchange="toggleMode(this.checked)">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
+    <span class="toggle-icon">☀️</span>
+    <span class="mode-toggle-label" id="modeLabel">Dark Mode</span>
+  </div>
+
+  <button class="btn-start" onclick="startGame()">🚀 Take the Challenge</button>
+  <p style="font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:10px;animation:fadeUp .4s .22s ease both;">Digital Marketing Game &nbsp;·&nbsp; 10 Levels</p>
+
+
+
+  <footer class="footer" style="margin-top:32px;">
+    © 2026 <a href="https://digitalxperience.ai" target="_blank">DigitalXperience.ai</a> — All rights reserved. Unauthorised copying or reproduction prohibited.
+  </footer>
+</section>
+
+<!-- ═══════════════ GAME ═══════════════ -->
+<section id="s-game" class="screen">
+
+  <!-- Sticky header -->
+  <div class="game-hdr">
+    <div class="hdr-left">
+      <div class="lives-display" id="livesDisplay">
+        <span class="life-icon" id="life1">❤️</span>
+        <span class="life-icon" id="life2">❤️</span>
+      </div>
+      <button class="btn-pass-hdr" id="btnPass" onclick="usePass()">🎟️ PASS</button>
+    </div>
+
+    <div class="level-prog" id="levelProg">
+      <!-- 10 step dots filled by JS -->
+    </div>
+
     <div class="hdr-right">
-      <div class="team-chip" id="teamChip">—</div>
+      <div class="score-pill">
+        <span>PTS</span>
+        <span class="score-val" id="scoreVal">0</span>
+      </div>
       <div class="timer-outer">
-        <div class="timer-label">Time Left</div>
         <div class="timer-wrap" id="timerWrap">
-          <svg width="58" height="58" viewBox="0 0 58 58">
-            <circle class="timer-bg" cx="29" cy="29" r="26"/>
-            <circle class="t-ring" id="tRing" cx="29" cy="29" r="26"/>
+          <svg viewBox="0 0 52 52" width="52" height="52">
+            <circle class="timer-bg" cx="26" cy="26" r="22"/>
+            <circle class="t-ring" id="tRing" cx="26" cy="26" r="22"/>
           </svg>
-          <div class="t-inner">
-            <div class="t-mins" id="tMins">20:00</div>
-          </div>
+          <div class="t-inner"><span class="t-num" id="tNum">45</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Body -->
-  <div class="game-body" id="gameBody"></div>
+  <!-- Question area -->
+  <div class="game-body" id="questionArea">
+    <!-- Populated by JS -->
+  </div>
 
-  <!-- Bottom Bar -->
-  <div class="bbar">
-    <div class="bbar-status" id="bStat">Complete all sections then submit.</div>
-    <div class="bbar-btns">
-      <button class="btn-submit" id="btnSub">Submit Phase →</button>
-      <button class="btn-next on" id="btnNext" style="display:none">Next Phase →</button>
+  <!-- Streak banner -->
+  <div class="streak-banner" id="streakBanner"></div>
+  <!-- Bonus popup -->
+  <div class="bonus-pop" id="bonusPop">
+    <div class="bonus-num" id="bonusNum">+10</div>
+    <div class="bonus-label" id="bonusLabel">Time Bonus</div>
+  </div>
+</section>
+
+<!-- ═══════════════ GAME OVER ═══════════════ -->
+<section id="s-over" class="screen">
+  <div class="over-icon">💔</div>
+  <h2 class="over-h">Game Over</h2>
+  <p class="over-sub" id="overSub">You ran out of lives. Better luck next time!</p>
+
+  <div class="results-card">
+    <div class="rc-row">
+      <span class="rc-label">Last Completed</span>
+      <span class="rc-value" id="overLevel">—</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-label">Questions Correct</span>
+      <span class="rc-value" id="overCorrect">—</span>
+    </div>
+    <div class="rc-row">
+      <span class="rc-label">Final Score</span>
+      <span class="rc-value big" id="overScore">0</span>
     </div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════
-     FINANCIAL REVEAL
-══════════════════════════════════════ -->
-<div id="s-reveal" class="screen">
-  <div class="reveal-eye">Phase 4 · Financial Engine</div>
-  <h2 class="reveal-h">Your Financial Results</h2>
-  <div class="reveal-calc" id="revCalc"></div>
-  <div class="profit-banner" id="profitBanner">
-    <div class="pban-label" id="pbanLbl"></div>
-    <div class="pban-num" id="pbanNum"></div>
-    <div class="pban-sub" id="pbanSub"></div>
-  </div>
-  <button class="btn-reveal-spi" id="btnRevealSPI">Reveal My SPI Score →</button>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="?admin" class="footer-admin-link">Facilitator Admin</a>
-  </div>
-</div>
+  <p class="compare-msg" id="compareMsg"></p>
 
-<!-- ══════════════════════════════════════
-     RESULTS
-══════════════════════════════════════ -->
-<div id="s-results" class="screen">
-  <div class="res-trophy" id="resTrophy">🏆</div>
-  <div class="res-eyebrow">Simulation Complete</div>
-  <h2 class="res-title">Strategy Performance</h2>
-  <p class="res-team" id="resTeamName"></p>
-  <div class="spi-card">
-    <div class="spi-lbl">Strategy Performance Index</div>
-    <div class="spi-big" id="resSPIBig">0</div>
-    <div class="spi-max">/ 120 maximum</div>
-    <div class="perf-band" id="perfBand"></div>
-  </div>
-  <div class="score-grid" id="scoreGrid"></div>
-  <div class="badges" id="resBadges"></div>
-  <button class="btn-go-lb" id="btnGoLB" style="display:none">View Leaderboard →</button>
-  <button class="btn-restart" onclick="location.reload()">Play Again</button>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="?admin" class="footer-admin-link">Facilitator Admin</a>
-  </div>
-</div>
+  <button class="btn-replay" onclick="restartGame()">🔁 Play Again</button>
 
-<!-- ══════════════════════════════════════
-     LEADERBOARD
-══════════════════════════════════════ -->
-<div id="s-leader" class="screen">
-  <div class="lb-wrap">
-    <div class="lb-eyebrow">DigitalXperience.ai · NourishBox Simulation</div>
-    <h2 class="lb-h">Live <span>Leaderboard</span></h2>
-    <p class="lb-sub">Ranked by SPI · Includes all execution factors</p>
-    <div id="lbBody"></div>
-    <button class="btn-lb-back" id="btnMyResult">My Results →</button>
-  </div>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="?admin" class="footer-admin-link">Facilitator Admin</a>
-  </div>
-</div>
+  <footer class="footer">
+    © 2026 <a href="https://digitalxperience.ai" target="_blank">DigitalXperience.ai</a> — All rights reserved. Unauthorised copying or reproduction prohibited.
+  </footer>
+</section>
 
-<!-- ══════════════════════════════════════
-     REFLECTION
-══════════════════════════════════════ -->
-<div id="s-reflect" class="screen">
-  <div class="ref-icon">💡</div>
-  <h2 class="ref-h">Reflect & Debrief</h2>
-  <p class="ref-sub">Before you close — sit with these questions. They're where the real learning happens.</p>
-  <div class="ref-prompts">
-    <div class="ref-prompt"><strong>On your objective:</strong> Did your objective actually reduce CPA or improve retention? What would you change?</div>
-    <div class="ref-prompt"><strong>On your channel mix:</strong> Did you balance acquisition and retention? What happened to your months when you didn't?</div>
-    <div class="ref-prompt"><strong>On your creative:</strong> How did format, sound, and duration choices affect your execution score?</div>
-    <div class="ref-prompt"><strong>On risk:</strong> Was your risk profile aligned with your profit outcome?</div>
-  </div>
-  <button class="btn-go-lb" onclick="showLeaderboard()">Back to Leaderboard</button>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="?admin" class="footer-admin-link">Facilitator Admin</a>
-  </div>
-</div>
+<!-- ═══════════════ WIN ═══════════════ -->
+<section id="s-win" class="screen">
+  <div class="win-icon">🏆</div>
+  <h2 class="win-h">You are a<br><em>Top Tier Marketer!</em></h2>
+  <p class="win-sub">
+    Only the sharpest digital marketers complete all 10 levels. You've demonstrated genuine mastery — congratulations!
+  </p>
 
-<!-- ══════════════════════════════════════
-     ADMIN LOGIN
-══════════════════════════════════════ -->
-<div id="s-login" class="screen">
-  <div class="login-card">
-    <div class="login-icon">🔐</div>
-    <div class="login-h">Facilitator Access</div>
-    <div class="login-sub">Enter the admin password to access the session dashboard.</div>
-    <label class="login-lbl">Password</label>
-    <input type="password" class="login-in" id="pwIn" placeholder="••••••••">
-    <div class="login-err" id="pwErr">Incorrect password. Try again.</div>
-    <button class="btn-login-go" id="btnLogin">Access Dashboard</button>
-  </div>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-  </div>
-</div>
+  <div class="confetti-bar" id="confettiBtns"></div>
 
-<!-- ══════════════════════════════════════
-     ADMIN DASHBOARD
-══════════════════════════════════════ -->
-<div id="s-admin" class="screen">
-  <div class="adm-wrap">
-    <div class="adm-eyebrow">Facilitator Dashboard</div>
-    <h2 class="adm-h">Session Overview</h2>
-    <p class="adm-sub">Live results — <span id="admCount">0 teams</span></p>
-    <div class="adm-actions">
-      <button class="adm-btn" onclick="admRefresh()">
-        <div class="adm-btn-icon">🔄</div>
-        <div class="adm-btn-lbl">Refresh</div>
-        <div class="adm-btn-desc">Reload all team data from storage.</div>
-      </button>
-      <button class="adm-btn" onclick="admCSV()">
-        <div class="adm-btn-icon">📥</div>
-        <div class="adm-btn-lbl">Export CSV</div>
-        <div class="adm-btn-desc">Download full results spreadsheet.</div>
-      </button>
-      <button class="adm-btn danger" onclick="document.getElementById('confirmDel').classList.add('on')">
-        <div class="adm-btn-icon">🗑️</div>
-        <div class="adm-btn-lbl">Reset Session</div>
-        <div class="adm-btn-desc">Wipe all team data for a fresh session.</div>
-      </button>
+  <div class="results-card">
+    <div class="rc-row">
+      <span class="rc-label">Levels Completed</span>
+      <span class="rc-value">10 / 10 ✅</span>
     </div>
-    <div class="confirm-del" id="confirmDel">
-      <p>This will permanently delete all team data. This cannot be undone.</p>
-      <button class="btn-del-ok" onclick="admReset()">Yes, Reset Everything</button>
-      <button class="btn-del-cancel" onclick="document.getElementById('confirmDel').classList.remove('on')">Cancel</button>
+    <div class="rc-row">
+      <span class="rc-label">Questions Correct</span>
+      <span class="rc-value" id="winCorrect">—</span>
     </div>
-    <div class="adm-section">
-      <div class="adm-sh">Leaderboard</div>
-      <div id="admLeader"></div>
-    </div>
-    <div class="adm-section">
-      <div class="adm-sh">Written Responses</div>
-      <div id="admText"></div>
+    <div class="rc-row">
+      <span class="rc-label">Final Score</span>
+      <span class="rc-value big" id="winScore">0</span>
     </div>
   </div>
-  <div class="footer">
-    © 2026 DigitalXperience.ai — All rights reserved. Unauthorised copying or reproduction prohibited.
-    <span class="footer-sep">|</span>
-    <a href="#" onclick="show('s-home');return false">← Back to Simulation</a>
-  </div>
-</div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════════════ -->
+  <p class="compare-msg">🎓 Share your result and challenge your classmates!</p>
+
+  <button class="btn-replay" onclick="restartGame()">🔁 Play Again</button>
+
+  <footer class="footer">
+    © 2026 <a href="https://digitalxperience.ai" target="_blank">DigitalXperience.ai</a> — All rights reserved. Unauthorised copying or reproduction prohibited.
+  </footer>
+</section>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
 <script>
-'use strict';
-
-// ── CONFIG ──────────────────────────────────────────
-var ADMIN_PW = 'dx2025';
-var LS_KEY   = 'dx_nb2_teams';
-var LS_TEAM  = 'dx_nb2_team_';
-
-// ── ECONOMIC CONSTANTS ────────────────────────────
-var MONTHLY_PROFIT = 15; // £15/month margin
-
-// ── PHASE 1 DATA ──────────────────────────────────
-var OBJ_DATA = {
-  rapid:    {label:'Rapid Growth',      cpaMod:+8,  monthsMod:-1, desc:'Aggressive expansion — higher spend, lower loyalty'},
-  balanced: {label:'Balanced Growth',   cpaMod:0,   monthsMod:0,  desc:'No change to CPA or retention baseline'},
-  profit:   {label:'Profit First',      cpaMod:-5,  monthsMod:+1, desc:'Disciplined spending — lower CPA, better retention'}
+/* ─────────────────────────────────────────
+   QUESTION BANK
+   Each level: array of 3 questions.
+   correct: index into options[] (0-based)
+───────────────────────────────────────── */
+const QUESTION_BANK = {
+  '90': {
+    label: '90%', category: 'Digital Marketing Basics', pts: 10,
+    difficulty: 'easy',
+    questions: [
+      {
+        q: 'A company runs campaigns across social media but never changes them. Performance stays flat. What is the most likely issue?',
+        options: ['Budget is too low', 'No use of data to optimise decisions', 'Too many platforms'],
+        correct: 1
+      },
+      {
+        q: 'Two campaigns get the same number of views. Only one improves over time. Why?',
+        options: ['It uses more images', 'It uses performance data to optimise', 'It targets more people'],
+        correct: 1
+      },
+      {
+        q: 'A brand increases posting frequency but engagement drops. What is the most likely reason?',
+        options: ['Posting more always reduces reach', 'Content is not aligned with audience needs', 'Algorithms penalise daily posting'],
+        correct: 1
+      }
+    ]
+  },
+  '80': {
+    label: '80%', category: 'Objectives (SOSTAC)', pts: 20,
+    difficulty: 'easy',
+    questions: [
+      {
+        q: 'A campaign runs for 3 months, but success cannot be evaluated. Why?',
+        options: ['Budget too low', 'Objectives were not clearly measurable', 'Channels were wrong'],
+        correct: 1
+      },
+      {
+        q: 'Which objective is weakest for decision-making?',
+        options: ['Increase revenue by 15% in 12 months', 'Improve customer engagement', 'Reduce bounce rate by 10%'],
+        correct: 1
+      },
+      {
+        q: 'Which is a SMART objective?',
+        options: ['Get 10% more followers', 'Increase traffic by 20% in 3 months', 'Improve brand engagement by 10%'],
+        correct: 1
+      }
+    ]
+  },
+  '70': {
+    label: '70%', category: 'Segmentation & Strategy', pts: 30,
+    difficulty: 'easy',
+    questions: [
+      {
+        q: 'A campaign targets a broad audience but performs poorly. What is the main issue?',
+        options: ['Too many channels', 'Message lacks relevance across segments', 'Budget is too high'],
+        correct: 1
+      },
+      {
+        q: 'Which is the main strategic risk of targeting a mass audience?',
+        options: ['Reduced data collection', 'Diluted value proposition across segments', 'Increased ad spend'],
+        correct: 1
+      },
+      {
+        q: 'A niche segment generates fewer clicks but higher conversions. What should you do?',
+        options: ['Ignore it due to low volume', 'Prioritise it due to higher efficiency', 'Replace it with broader targeting'],
+        correct: 1
+      }
+    ]
+  },
+  '60': {
+    label: '60%', category: 'SEO', pts: 40,
+    difficulty: 'med',
+    questions: [
+      {
+        q: 'Two websites have similar content, but one ranks higher consistently. Why?',
+        options: ['More backlinks increasing authority', 'More images', 'Longer paragraphs'],
+        correct: 0
+      },
+      {
+        q: 'A page ranks highly but has a very low click-through rate. What is the issue?',
+        options: ['Weak title/description reducing appeal', 'Too many backlinks', 'Too much content'],
+        correct: 0
+      },
+      {
+        q: 'A keyword has high traffic but low conversions. Why?',
+        options: ['Too many backlinks', 'Weak search intent alignment', 'Too much competition'],
+        correct: 1
+      }
+    ]
+  },
+  '50': {
+    label: '50%', category: 'Google Ads', pts: 50,
+    difficulty: 'med',
+    questions: [
+      {
+        q: '£300 spend generates 150 clicks and 3 sales. What is the main issue?',
+        options: ['CPC is too high', 'Conversion rate is low', 'Too much traffic'],
+        correct: 1
+      },
+      {
+        q: 'A company pauses Google Ads but traffic remains stable. Why?',
+        options: ['Ads are still running', 'Organic channels are driving traffic', 'Traffic is unaffected by ads'],
+        correct: 1
+      },
+      {
+        q: 'Campaign A: high clicks, low sales. Campaign B: lower clicks, higher sales. Which is better?',
+        options: ['Campaign A', 'Campaign B', 'Both equal'],
+        correct: 1
+      }
+    ]
+  },
+  '40': {
+    label: '40%', category: 'Mobile & Social', pts: 60,
+    difficulty: 'med',
+    questions: [
+      {
+        q: 'Users leave a page within 3 seconds. What is most likely wrong?',
+        options: ['Too many backlinks', 'Slow load or unclear content immediately visible', 'Too many ads'],
+        correct: 1
+      },
+      {
+        q: 'A social post is informative but gets ignored. Why?',
+        options: ['Too much data', 'It fails to capture attention instantly on mobile', 'It lacks hashtags'],
+        correct: 1
+      },
+      {
+        q: 'Why is mobile behaviour difficult for marketers?',
+        options: ['Users browse less', 'Attention is fragmented into short bursts', 'Devices are slower'],
+        correct: 1
+      }
+    ]
+  },
+  '30': {
+    label: '30%', category: 'Email Marketing', pts: 70,
+    difficulty: 'hard',
+    questions: [
+      {
+        q: 'High open rate, low click rate. What is the issue?',
+        options: ['Weak subject line', 'Weak content or CTA', 'Poor segmentation'],
+        correct: 1
+      },
+      {
+        q: 'An email campaign performs poorly despite strong content. Why?',
+        options: ['Sent to the wrong audience segment', 'Too many images', 'Too short'],
+        correct: 0
+      },
+      {
+        q: 'A company sends the same email to all users. What is the risk?',
+        options: ['Higher open rates', 'Lower relevance and engagement', 'Lower costs'],
+        correct: 1
+      }
+    ]
+  },
+  '20': {
+    label: '20%', category: 'Content Marketing', pts: 80,
+    difficulty: 'hard',
+    questions: [
+      {
+        q: 'Content gets high traffic but no conversions. Why?',
+        options: ['Not enough content', 'No clear path to action', 'Too many keywords'],
+        correct: 1
+      },
+      {
+        q: 'A company produces frequent content but sees no growth. Why?',
+        options: ['Not enough posts', 'Lack of strategic alignment with goals', 'Too many visuals'],
+        correct: 1
+      },
+      {
+        q: 'Which content is most valuable?',
+        options: ['Content that attracts attention only', 'Content that drives measurable action', 'Content that is shared widely'],
+        correct: 1
+      }
+    ]
+  },
+  '10': {
+    label: '10%', category: 'Analytics', pts: 90,
+    difficulty: 'hard',
+    canPass: false,
+    questions: [
+      {
+        q: 'Traffic increases by 50%, but revenue stays the same. Why?',
+        options: ['Conversion rate has decreased', 'Traffic quality improved', 'Costs increased'],
+        correct: 0
+      },
+      {
+        q: 'A campaign has fewer visitors but higher revenue. Why?',
+        options: ['Higher conversion rate or better targeting', 'Lower traffic cost', 'More impressions'],
+        correct: 0
+      },
+      {
+        q: 'Two campaigns have equal traffic. One generates more revenue. Why?',
+        options: ['Better conversion rate', 'More impressions', 'Lower cost per click'],
+        correct: 0
+      }
+    ]
+  },
+  '1': {
+    label: '1%', category: 'Advanced Strategy', pts: 100,
+    difficulty: '1pct',
+    canPass: false,
+    questions: [
+      {
+        q: 'A campaign doubles its traffic but its conversion rate halves. What happens to total sales?',
+        options: ['Increase', 'Decrease', 'Stay the same'],
+        correct: 2
+      },
+      {
+        q: 'Campaign A: 100 visitors → 10 sales. Campaign B: 1,000 visitors → 50 sales. Which performs better?',
+        options: ['Campaign A', 'Campaign B', 'Depends on the objective'],
+        correct: 2
+      },
+      {
+        q: 'You improve conversion rate, but traffic drops significantly. What determines whether performance improved?',
+        options: ['Conversion rate', 'Traffic', 'Overall revenue outcome'],
+        correct: 2
+      }
+    ]
+  }
 };
 
-// Audiences have their own Base CPA and Base Months (not modifiers)
-var AUD_DATA = {
-  students: {label:'Students (18–24)',             baseCPA:35, baseMonths:4, desc:'Easiest to acquire, least loyal. Price-sensitive — likely to churn when costs rise.'},
-  young:    {label:'Young Professionals (25–34)',  baseCPA:38, baseMonths:6, desc:'Balanced cost and loyalty. Aspire to healthy living, moderate subscription commitment.'},
-  families: {label:'Families (30–45)',             baseCPA:42, baseMonths:8, desc:'Most expensive to acquire but highest lifetime loyalty. Value convenience and quality.'}
-};
+const LEVEL_ORDER = ['90','80','70','60','50','40','30','20','10','1'];
+const TIMER_TOTAL = 45;
+const CIRCUMFERENCE = 2 * Math.PI * 22; // ~138.2
 
-// ── PHASE 2 DATA ──────────────────────────────────
-var PLAT_DATA = {
-  app:  {label:'App Only',      cpaMod:+3, monthsMod:+2, desc:'Dedicated app — best retention experience, higher build cost'},
-  web:  {label:'Mobile Web Only', cpaMod:-2, monthsMod:-1, desc:'Lower cost, weaker loyalty signal, less engagement'},
-  both: {label:'App & Web',     cpaMod:+1, monthsMod:+1, desc:'Maximum reach with solid retention — moderate cost uplift'}
-};
+/* ── STATE ── */
+let state = {};
 
-var CHANNEL_DATA = [
-  {id:'search',   label:'Paid Search',  desc:'High intent, cost-efficient acquisition'},
-  {id:'tiktok',   label:'TikTok',       desc:'Mass reach, younger audiences'},
-  {id:'instagram',label:'Instagram',    desc:'Visual brand, mid-funnel awareness'},
-  {id:'facebook', label:'Facebook',     desc:'Broad targeting, retargeting capability'},
-  {id:'x',        label:'X (Twitter)',  desc:'Niche engagement, lower volume'},
-  {id:'youtube',  label:'YouTube',      desc:'Long-form content, brand loyalty'},
-  {id:'whatsapp', label:'WhatsApp',     desc:'Community-driven retention channel'}
-];
+function initState() {
+  state = {
+    levelIdx: 0,
+    lives: 2,
+    hasPass: true,
+    score: 0,
+    streak: 0,
+    correctCount: 0,
+    answered: false,
+    lastAnswerCorrect: false,
+    timerVal: TIMER_TOTAL,
+    timerInterval: null,
+    currentQuestion: null,
+    currentOptions: [],
+  };
+}
 
-// Modifiers by channel × role chosen by student
-var CH_MOD = {
-  search:   {acq:{cpaMod:+5, monthsMod:+2}, ret:{cpaMod:0, monthsMod:0}},
-  tiktok:   {acq:{cpaMod:-3, monthsMod:-1}, ret:{cpaMod:0, monthsMod:+1}},
-  instagram:{acq:{cpaMod:+2, monthsMod:+1}, ret:{cpaMod:0, monthsMod:+1}},
-  facebook: {acq:{cpaMod:+1, monthsMod:+1}, ret:{cpaMod:0, monthsMod:+1}},
-  x:        {acq:{cpaMod:0,  monthsMod:0},  ret:{cpaMod:0, monthsMod:0}},
-  youtube:  {acq:{cpaMod:+3, monthsMod:+1}, ret:{cpaMod:0, monthsMod:+1}},
-  whatsapp: {acq:{cpaMod:0,  monthsMod:0},  ret:{cpaMod:0, monthsMod:+2}}
-};
-// If no channel tagged retention → -2 months penalty
-
-// OTS: 3–5 optimal; 1-2 or 6-7 → -5 SPI; 8+ → -10 SPI
-
-// ── PHASE 3 DATA ──────────────────────────────────
-var HOOK_DATA = {
-  discount: {label:'Discount / Offer',       cpaMod:-4, monthsMod:-2, desc:'"50% off first box" — sharp acquisition, kills loyalty'},
-  lifestyle:{label:'Lifestyle',              cpaMod:+3, monthsMod:+2, desc:'Aspirational story — slower acquisition, higher loyalty'},
-  problemsol:{label:'Problem–Solution',      cpaMod:0,  monthsMod:+1, desc:'Addresses a real pain point — balanced and credible'}
-};
-
-var FORMAT_DATA = {
-  banner: {label:'Banner',         cpaMod:+2, monthsMod:0,   desc:'Static display, lower engagement'},
-  video:  {label:'Video',          cpaMod:-2, monthsMod:+1,  desc:'Dynamic, high-engagement format'},
-  mix:    {label:'Mix (multiple)', cpaMod:0,  monthsMod:+1,  desc:'Broad creative coverage across formats'}
-};
-
-// ── GAME STATE ────────────────────────────────────
-var G = {
-  team:'', members:'', phase:0,
-  objective:null, audience:null, p1text:'',
-  platform:null,
-  channels:[],           // [{id, role}]
-  ots:0, otsSet:false, risk:null, p2text:'',
-  hooks:[],              // can pick multiple — store as array
-  formats:[],            // multi-select
-  sound:null, viewDur:0, viewDurSet:false, orientation:null, p3text:'',
-  p1mc:null, p2rank:['awareness','acquisition','retention'], p3mc:null,
-  finalCPA:0, finalMonths:0, ltv:0, profit:0,
-  spi:0, profitScore:0, retentionScore:0, alignScore:0, riskScore:0,
-  writtenBonus:0, execPenalty:0,
-  completedAt:null
-};
-
-// ── ROUTING ────────────────────────────────────────
-(function route(){
-  if(window.location.search.includes('admin')||window.location.hash==='#admin') show('s-login');
-})();
-
-// ── UTILITIES ─────────────────────────────────────
-function show(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+/* ── SCREEN HELPER ── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   document.getElementById(id).classList.add('on');
-  window.scrollTo(0,0);
-}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function closeModal(){document.getElementById('modal').classList.remove('on');}
-
-function openTip(label,title,body){
-  document.getElementById('tipLabel').textContent=label;
-  document.getElementById('tipTitle').textContent=title;
-  document.getElementById('tipBody').innerHTML=body;
-  document.getElementById('tipBg').classList.add('on');
-}
-function closeTip(){document.getElementById('tipBg').classList.remove('on');}
-
-function flash(txt){
-  var el=document.getElementById('flash');
-  el.textContent=txt;el.style.display='block';
-  el.style.animation='none';el.offsetHeight;
-  el.style.animation='pop 1s ease forwards';
-  setTimeout(function(){el.style.display='none';},1000);
 }
 
-// ── ADMIN ─────────────────────────────────────────
-document.getElementById('btnLogin').addEventListener('click',function(){
-  if(document.getElementById('pwIn').value===ADMIN_PW){show('s-admin');admRefresh();}
-  else{document.getElementById('pwErr').classList.add('on');document.getElementById('pwIn').value='';}
-});
-document.getElementById('pwIn').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('btnLogin').click();});
-
-function getTeams(){
-  try{
-    var list=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-    return list.map(function(n){try{return JSON.parse(localStorage.getItem(LS_TEAM+n));}catch(e){return null;}}).filter(Boolean);
-  }catch(e){return[];}
-}
-
-function admRefresh(){
-  var teams=getTeams().sort(function(a,b){return(b.spi||0)-(a.spi||0);});
-  document.getElementById('admCount').textContent=teams.length+' team'+(teams.length!==1?'s':'');
-  var rl={safe:'Safe',bal:'Balanced',bold:'Bold'};
-  var rc={safe:'rt-safe',bal:'rt-bal',bold:'rt-bold'};
-  var lb=document.getElementById('admLeader');
-  if(!teams.length){lb.innerHTML='<div class="lb-empty">No completed teams yet.</div>';document.getElementById('admText').innerHTML='';return;}
-  var h='<table class="adm-table"><thead><tr><th>#</th><th>Team</th><th>SPI</th><th>Profit</th><th>Months</th><th>CPA</th><th>Risk</th><th>Penalty</th><th>Bonus</th></tr></thead><tbody>';
-  teams.forEach(function(t,i){
-    var rtag=t.risk?'<span class="risk-tag '+rc[t.risk]+'">'+rl[t.risk]+'</span>':'—';
-    h+='<tr><td class="adm-spi">'+(i<3?['🥇','🥈','🥉'][i]:i+1)+'</td>';
-    h+='<td><strong>'+esc(t.team)+'</strong><br><span style="font-size:.75rem;color:var(--muted)">'+esc(t.members||'')+'</span></td>';
-    h+='<td class="adm-spi">'+(t.spi||0)+'</td>';
-    h+='<td style="color:'+(t.profit>=0?'var(--brand1)':'var(--red)')+';font-family:monospace">'+(t.profit>=0?'+':'')+'£'+t.profit.toFixed(2)+'</td>';
-    h+='<td>'+t.finalMonths+'</td><td>£'+t.finalCPA.toFixed(2)+'</td><td>'+rtag+'</td>';
-    h+='<td style="color:var(--red)">-'+(t.execPenalty||0)+'</td><td style="color:var(--brand1)">+'+(t.writtenBonus||0)+'</td></tr>';
+/* ── START ── */
+function startGame() {
+  initState();
+  showScreen('s-game');
+  // Reset hearts immediately (in case of replay)
+  ['life1','life2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'life-icon'; el.textContent = '❤️'; }
   });
-  lb.innerHTML=h+'</tbody></table>';
-  var ta=document.getElementById('admText');
-  var th='<table class="adm-table"><thead><tr><th>Team</th><th>P1 Strategy</th><th>P2 Channels</th><th>P3 Creative</th></tr></thead><tbody>';
-  teams.forEach(function(t){
-    th+='<tr><td><strong>'+esc(t.team)+'</strong></td>';
-    th+='<td style="font-size:.78rem;color:#aab;max-width:180px">'+esc(t.p1text||'—')+'</td>';
-    th+='<td style="font-size:.78rem;color:#aab;max-width:180px">'+esc(t.p2text||'—')+'</td>';
-    th+='<td style="font-size:.78rem;color:#aab;max-width:180px">'+esc(t.p3text||'—')+'</td></tr>';
+  buildLevelProg();
+  renderQuestion();
+}
+
+function restartGame() {
+  startGame();
+}
+
+/* ── LEVEL PROGRESS BAR ── */
+function buildLevelProg() {
+  const prog = document.getElementById('levelProg');
+  prog.innerHTML = '';
+  LEVEL_ORDER.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'lp-step';
+    d.id = `lpStep${i}`;
+    prog.appendChild(d);
   });
-  ta.innerHTML=th+'</tbody></table>';
+  updateLevelProg();
 }
 
-function admReset(){
-  var list=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-  list.forEach(function(n){localStorage.removeItem(LS_TEAM+n);});
-  localStorage.removeItem(LS_KEY);
-  document.getElementById('confirmDel').classList.remove('on');
-  admRefresh();
-}
-
-function admCSV(){
-  var teams=getTeams().sort(function(a,b){return(b.spi||0)-(a.spi||0);});
-  if(!teams.length){alert('No data to export.');return;}
-  var hdrs=['Rank','Team','Members','SPI','Profit','CPA','Months','LTV','Risk','Penalty','Bonus','Objective','Audience','Platform','Channels','Hook','Format','Sound','OTS','Orientation','ViewDur','P1Text','P2Text','P3Text'];
-  var rows=[hdrs];
-  teams.forEach(function(t,i){
-    var chs=(t.channels||[]).map(function(c){return c.id+':'+c.role;}).join(';');
-    rows.push([i+1,t.team,t.members||'',t.spi,t.profit.toFixed(2),t.finalCPA.toFixed(2),t.finalMonths,t.ltv.toFixed(2),t.risk||'',t.execPenalty,t.writtenBonus,t.objective||'',t.audience||'',t.platform||'',chs,(t.hooks||[]).join(';'),(t.formats||[]).join(';'),t.sound,t.ots,t.orientation,t.viewDur,t.p1text||'',t.p2text||'',t.p3text||'']);
+function updateLevelProg() {
+  LEVEL_ORDER.forEach((_, i) => {
+    const el = document.getElementById(`lpStep${i}`);
+    if (!el) return;
+    el.classList.remove('done','current');
+    if (i < state.levelIdx) el.classList.add('done');
+    else if (i === state.levelIdx) el.classList.add('current');
   });
-  var csv=rows.map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='nourishbox-results.csv';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 
-// ── REGISTRATION ────────────────────────────────
-document.getElementById('startBtn').addEventListener('click',function(){
-  var name=document.getElementById('teamIn').value.trim();
-  if(!name){document.getElementById('teamIn').style.borderColor='var(--red)';document.getElementById('teamIn').focus();return;}
-  G.team=name; G.members=document.getElementById('membersIn').value.trim();
-  document.getElementById('teamChip').textContent=name;
-  show('s-game'); loadPhase(1, true);
-});
-document.getElementById('teamIn').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('startBtn').click();});
+/* ── RENDER QUESTION ── */
+function renderQuestion() {
+  clearTimer();
+  state.answered = false;
+  updateLevelProg();
+  updateLivesDisplay();
+  updatePassBtn();
 
-// ── PHASE MANAGEMENT ────────────────────────────
-function loadPhase(n, autoStart){
-  G.phase=n;
-  for(var i=1;i<=3;i++){
-    var el=document.getElementById('ps'+i);
-    el.className='prog-step'+(i<n?' done':i===n?' active':'');
+  const levelKey = LEVEL_ORDER[state.levelIdx];
+  const levelData = QUESTION_BANK[levelKey];
+  
+  // Pick random question from pool
+  const pool = levelData.questions;
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  state.currentQuestion = picked;
+
+  // Shuffle options, keeping track of correct
+  const indices = [0,1,2];
+  shuffle(indices);
+  state.currentOptions = indices.map((origIdx, newIdx) => ({
+    text: picked.options[origIdx],
+    isCorrect: origIdx === picked.correct,
+    newIdx
+  }));
+
+  // Difficulty class for level badge
+  const diffClass = {easy:'lb-easy',med:'lb-med',hard:'lb-hard','1pct':'lb-1pct'}[levelData.difficulty] || 'lb-med';
+
+  const area = document.getElementById('questionArea');
+  area.innerHTML = `
+    <div class="q-enter">
+      <div class="level-badge ${diffClass}">
+        <span class="lb-pct">${levelData.label}</span>
+        <span>Level</span>
+      </div>
+      <div class="category-tag">${levelData.category} · ${levelData.pts} pts</div>
+      <div class="q-text">${picked.q}</div>
+      <div class="answers" id="answersDiv">
+        ${state.currentOptions.map((opt, i) => `
+          <button class="ans-btn" id="ans${i}" onclick="selectAnswer(${i})">
+            <span class="ans-key">${String.fromCharCode(65+i)}</span>
+            <span>${opt.text}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback-bar" id="feedbackBar"></div>
+      <button class="btn-next" id="btnNext">
+        ${state.levelIdx === LEVEL_ORDER.length - 1 ? '🏆 Claim Your Crown' : 'Next Level →'}
+      </button>
+    </div>
+  `;
+
+  startTimer(levelKey);
+}
+
+/* ── SHUFFLE HELPER ── */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  window.scrollTo({top:0, behavior:'instant'});
-  if(autoStart){
-    document.getElementById('btnSub').style.display='';
-    document.getElementById('btnSub').disabled=false;
-    document.getElementById('btnNext').style.display='none';
-    document.getElementById('bStat').textContent='Complete all sections then submit.';
-    document.getElementById('bStat').className='bbar-status';
-    if(n===1) buildPhase1();
-    else if(n===2) buildPhase2();
-    else if(n===3) buildPhase3();
-    startTimer(5);
-  } else {
-    showPhaseIntro(n);
-  }
+  return arr;
 }
 
-var PHASE_NAMES = {1:'Strategic Foundation', 2:'Platform & Channel Strategy', 3:'Creative & Execution'};
+/* ── TIMER ── */
+function startTimer(levelKey) {
+  state.timerVal = TIMER_TOTAL;
+  updateTimerUI(TIMER_TOTAL);
+  document.getElementById('timerWrap').classList.remove('timer-urgent');
 
-function showPhaseIntro(n){
-  clearInterval(_timer);
-  document.getElementById('btnSub').style.display='none';
-  document.getElementById('btnNext').style.display='none';
-  document.getElementById('bStat').textContent='';
-  var icon = n===2 ? '📡' : '🎨';
-  var desc = n===2
-    ? 'Choose your platform, channels, weekly frequency and risk profile. Tag each channel as Acquisition or Retention.'
-    : 'Define your creative hook, ad formats, sound strategy, view duration and orientation.';
-  var col = n===2 ? 'var(--brand2)' : 'var(--brand1)';
-  var h = '<div style="min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">';
-  h += '<div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:18px">Phase '+(n-1)+' Complete \u2713</div>';
-  h += '<div style="font-size:3rem;margin-bottom:14px">'+icon+'</div>';
-  h += '<h2 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;letter-spacing:-1px;margin-bottom:8px">Phase '+n+'</h2>';
-  h += '<div style="font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:'+col+';margin-bottom:26px">'+PHASE_NAMES[n]+'</div>';
-  h += '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 22px;max-width:420px;width:100%;margin-bottom:32px;font-size:.86rem;color:var(--muted);line-height:1.65;text-align:left">';
-  h += '<strong style="color:var(--text);display:block;margin-bottom:6px">\u23f1 20 minutes \u00b7 Timer starts when you click below</strong>';
-  h += desc;
-  h += '</div>';
-  h += '<button id="btnStartPhase" onclick="startPhase('+n+')" style="padding:16px 52px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#000;border:none;border-radius:9px;font-family:\'Open Sans\',sans-serif;font-size:1.05rem;font-weight:800;cursor:pointer;letter-spacing:.2px">Start Phase '+n+' \u2192</button>';
-  h += '</div>';
-  document.getElementById('gameBody').innerHTML = h;
-}
-
-function startPhase(n){
-  document.getElementById('btnSub').style.display='';
-  document.getElementById('btnSub').disabled=false;
-  document.getElementById('btnNext').style.display='none';
-  document.getElementById('bStat').textContent='Complete all sections then submit.';
-  document.getElementById('bStat').className='bbar-status';
-  if(n===1) buildPhase1();
-  else if(n===2) buildPhase2();
-  else if(n===3) buildPhase3();
-  window.scrollTo({top:0, behavior:'instant'});
-  startTimer(5);
-}
-
-// ── TIMER ────────────────────────────────────────
-var _timer=null;
-function startTimer(mins){
-  clearInterval(_timer);
-  var total=mins*60, secs=total;
-  var ring=document.getElementById('tRing');
-  var mEl=document.getElementById('tMins');
-  var circ=163.4; // 2π×26
-  function tick(){
-    var m=Math.floor(secs/60), s=secs%60;
-    mEl.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
-    ring.style.strokeDashoffset=circ-(circ*secs/total);
-    var wrap=document.getElementById('timerWrap');
-    if(secs<=120){wrap.classList.add('timer-urgent');}else{wrap.classList.remove('timer-urgent');}
-    if(secs>0)secs--;else{clearInterval(_timer);doSubmit();}
-  }
-  tick(); _timer=setInterval(tick,1000);
-}
-
-// ── BUILD PHASE 1 ───────────────────────────────
-
-// ── BRIEF + DECISIONS HELPERS ───────────────────
-function makeBriefPanel() {
-  var d = document.createElement('div');
-  d.className = 'brief-panel';
-  d.innerHTML = '<div class="brief-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
-    + '<div class="brief-toggle-left"><span>&#128203;</span>&nbsp;NourishBox Brief</div>'
-    + '<span class="brief-chevron">&#9660;</span></div>'
-    + '<div class="brief-body">'
-    + '<div class="brief-scenario"><strong>NourishBox</strong> is a UK subscription company delivering healthy snack boxes. Growth has slowed. Advertising costs are rising. Many customers cancel early.<br><br>Your task: build a profitable mobile-first strategy that lowers acquisition cost and improves retention.</div>'
-    + '<div class="brief-econ"><strong>Economic Constraints:</strong><br>'
-    + 'Monthly fee: <strong>&#163;25</strong> &nbsp;&middot;&nbsp; Gross margin: <strong>60%</strong> &nbsp;&middot;&nbsp; Monthly profit: <strong>&#163;15</strong><br>'
-    + 'LTV = &#163;15 &times; months retained &nbsp;&middot;&nbsp; Profit = LTV &minus; Final CPA<br>'
-    + 'Your decisions shift both CPA and retention. Make them count.</div>'
-    + '</div>';
-  return d.outerHTML;
-}
-
-function makeDecisionSummary(phase) {
-  var rows = '';
-  if (phase >= 2) {
-    var obj = G.objective ? (OBJ_DATA[G.objective] ? OBJ_DATA[G.objective].label : G.objective) : '&mdash;';
-    var aud = G.audience  ? (AUD_DATA[G.audience]  ? AUD_DATA[G.audience].label  : G.audience)  : '&mdash;';
-    rows += '<div class="dec-row"><span class="dec-lbl">Objective</span><span class="dec-val">' + obj + '</span></div>';
-    rows += '<div class="dec-row"><span class="dec-lbl">Audience</span><span class="dec-val">'   + aud + '</span></div>';
-  }
-  if (phase >= 3) {
-    var plat = G.platform ? (PLAT_DATA[G.platform] ? PLAT_DATA[G.platform].label : G.platform) : '&mdash;';
-    var chs = G.channels.length
-      ? G.channels.map(function(c){
-          var cd = CHANNEL_DATA.find(function(x){return x.id===c.id;});
-          return (cd ? cd.label : c.id) + ' (' + c.role.toUpperCase() + ')';
-        }).join(', ')
-      : '&mdash;';
-    var risk = G.risk ? G.risk.charAt(0).toUpperCase()+G.risk.slice(1) : '&mdash;';
-    var ots  = G.otsSet ? G.ots+'x / week' : '&mdash;';
-    rows += '<div class="dec-row"><span class="dec-lbl">Platform</span><span class="dec-val">'    + plat + '</span></div>';
-    rows += '<div class="dec-row"><span class="dec-lbl">Channels</span><span class="dec-val">'    + chs  + '</span></div>';
-    rows += '<div class="dec-row"><span class="dec-lbl">Frequency</span><span class="dec-val">'   + ots  + '</span></div>';
-    rows += '<div class="dec-row"><span class="dec-lbl">Risk Profile</span><span class="dec-val">'+ risk + '</span></div>';
-  }
-  if (!rows) return '';
-  return '<div class="dec-strip open">'
-    + '<div class="dec-toggle" onclick="this.parentElement.classList.toggle(\'open\')">'
-    + '<div class="dec-toggle-left"><span>&#128193;</span>&nbsp;Your Decisions So Far</div>'
-    + '<span class="dec-chevron">&#9660;</span></div>'
-    + '<div class="dec-body">' + rows + '</div></div>';
-}
-
-
-// ── OPEN DAY: MC + RANK INTERACTIONS ────────────
-
-// P1 multiple choice
-function pickMC1(v) {
-  G.p1mc = v;
-  ['a','b','c','d'].forEach(function(x){
-    var el = document.getElementById('mc1_'+x);
-    if(el) el.classList.remove('active');
-  });
-  var sel = document.getElementById('mc1_'+v);
-  if(sel) sel.classList.add('active');
-}
-
-// P3 multiple choice  
-function pickMC3(v) {
-  G.p3mc = v;
-  ['a','b','c','d'].forEach(function(x){
-    var el = document.getElementById('mc3_'+x);
-    if(el) el.classList.remove('active');
-  });
-  var sel = document.getElementById('mc3_'+v);
-  if(sel) sel.classList.add('active');
-}
-
-// Restore MC state when phase rebuilds
-var _origBuildP1 = buildPhase1;
-var _origBuildP3 = buildPhase3;
-
-// Drag to rank
-var _dragSrc = null;
-var _touchSrc = null;
-var _touchClone = null;
-
-function rankDragStart(e) {
-  _dragSrc = e.currentTarget;
-  e.dataTransfer.effectAllowed = 'move';
-}
-function rankDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  document.querySelectorAll('.rank-item').forEach(function(el){ el.classList.remove('drag-over'); });
-  e.currentTarget.classList.add('drag-over');
-}
-function rankDrop(e) {
-  e.preventDefault();
-  document.querySelectorAll('.rank-item').forEach(function(el){ el.classList.remove('drag-over'); });
-  if (_dragSrc && _dragSrc !== e.currentTarget) {
-    var list = e.currentTarget.parentNode;
-    var items = Array.from(list.children);
-    var srcIdx = items.indexOf(_dragSrc);
-    var tgtIdx = items.indexOf(e.currentTarget);
-    if (srcIdx < tgtIdx) {
-      list.insertBefore(_dragSrc, e.currentTarget.nextSibling);
-    } else {
-      list.insertBefore(_dragSrc, e.currentTarget);
+  state.timerInterval = setInterval(() => {
+    state.timerVal--;
+    updateTimerUI(state.timerVal);
+    if (state.timerVal <= 10) {
+      document.getElementById('timerWrap').classList.add('timer-urgent');
     }
-    updateRankNumbers();
-    saveRankOrder();
+    if (state.timerVal <= 0) {
+      clearTimer();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
   }
-  _dragSrc = null;
-}
-function updateRankNumbers() {
-  var items = document.querySelectorAll('.rank-item');
-  items.forEach(function(el, i){ 
-    var num = el.querySelector('.rank-num');
-    if(num) num.textContent = i+1;
-  });
-}
-function saveRankOrder() {
-  var items = document.querySelectorAll('.rank-item');
-  G.p2rank = Array.from(items).map(function(el){ return el.dataset.val; });
 }
 
-// Touch drag for mobile
-function rankTouchStart(e) {
-  _touchSrc = e.currentTarget;
-  var clone = _touchSrc.cloneNode(true);
-  clone.style.cssText = 'position:fixed;opacity:.8;pointer-events:none;z-index:9999;width:'+_touchSrc.offsetWidth+'px;';
-  document.body.appendChild(clone);
-  _touchClone = clone;
+function updateTimerUI(val) {
+  document.getElementById('tNum').textContent = val;
+  const ring = document.getElementById('tRing');
+  const offset = CIRCUMFERENCE * (1 - val / TIMER_TOTAL);
+  ring.style.strokeDashoffset = offset;
 }
-function rankTouchMove(e) {
-  e.preventDefault();
-  var t = e.touches[0];
-  if(_touchClone){ _touchClone.style.left=(t.clientX-40)+'px'; _touchClone.style.top=(t.clientY-20)+'px'; }
-  document.querySelectorAll('.rank-item').forEach(function(el){ el.classList.remove('drag-over'); });
-  var el = document.elementFromPoint(t.clientX, t.clientY);
-  var item = el ? el.closest('.rank-item') : null;
-  if(item && item !== _touchSrc) item.classList.add('drag-over');
-}
-function rankTouchEnd(e) {
-  if(_touchClone){ document.body.removeChild(_touchClone); _touchClone=null; }
-  var t = e.changedTouches[0];
-  var el = document.elementFromPoint(t.clientX, t.clientY);
-  var target = el ? el.closest('.rank-item') : null;
-  document.querySelectorAll('.rank-item').forEach(function(el){ el.classList.remove('drag-over'); });
-  if(target && target !== _touchSrc) {
-    var list = target.parentNode;
-    var items = Array.from(list.children);
-    var srcIdx = items.indexOf(_touchSrc);
-    var tgtIdx = items.indexOf(target);
-    if(srcIdx < tgtIdx){ list.insertBefore(_touchSrc, target.nextSibling); }
-    else { list.insertBefore(_touchSrc, target); }
-    updateRankNumbers();
-    saveRankOrder();
+
+function handleTimeout() {
+  if (state.answered) return;
+  state.answered = true;
+  disableAnswers();
+
+  const levelKey = LEVEL_ORDER[state.levelIdx];
+  const levelData = QUESTION_BANK[levelKey];
+  const passAllowed = levelData.canPass !== false;
+
+  // Auto-use pass if available, allowed on this level, and player still has lives
+  if (state.hasPass && passAllowed && state.lives > 0) {
+    state.hasPass = false;
+    state.streak = 0; // timeout breaks streak even with auto-pass
+    updatePassBtn();
+    const btn = document.getElementById('btnNext');
+    if (btn) {
+      btn.classList.add('show');
+      btn.textContent = state.levelIdx === LEVEL_ORDER.length - 1 ? '🏆 Claim Your Crown' : 'Next Level →';
+      btn.onclick = () => nextQuestion();
+    }
+    showFeedback('timeout', '⏰ Time\'s up! Your Pass was automatically used — no life lost. Moving on.');
+    return;
   }
-  _touchSrc = null;
-}
 
-function buildPhase1(){
-  var h='<div class="phase-pill ph1"><span class="dot"></span>Phase 1 · Strategic Foundation · 5 min</div>';
-  h+=makeBriefPanel();
-
-  // Objective
-  h+='<div class="qblock">';
-  h+='<div class="q-label">1.1 · Single Select · Objective</div>';
-  h+='<div class="q-text">What is NourishBox\'s primary marketing objective?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> NourishBox is experiencing slowing growth, rising ad costs, and high early churn. The objective you set becomes the lens for every decision that follows.</div>';
-  h+='<div class="sel-grid">';
-  var oi=0;
-  Object.keys(OBJ_DATA).forEach(function(k){
-    var d=OBJ_DATA[k];
-    h+='<button class="sel-btn" id="obj_'+k+'" onclick="pickObj(\''+k+'\')">';
-    h+='<span class="s-key">'+String.fromCharCode(65+oi)+'</span>';
-    h+='<span><strong>'+d.label+'</strong><br><span style="font-size:.78rem;color:var(--muted)">'+d.desc+'</span></span>';
-    h+='</button>'; oi++;
+  // No pass available — lose a life
+  // Highlight correct answer
+  state.currentOptions.forEach((opt, i) => {
+    if (opt.isCorrect) document.getElementById(`ans${i}`).classList.add('correct');
   });
-  h+='</div></div>';
 
-  // Audience
-  h+='<div class="qblock">';
-  h+='<div class="q-label">1.2 · Single Select · Target Audience</div>';
-  h+='<div class="q-text">Which audience should NourishBox target?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> These segments reflect real trade-offs between cost of acquisition and subscription longevity. Students are cheapest to reach but cancel soonest. Families cost more but stay far longer. Young Professionals sit in between — balancing cost and commitment.</div>';
-  h+='<div class="sel-grid">';
-  var ai=0;
-  Object.keys(AUD_DATA).forEach(function(k){
-    var d=AUD_DATA[k];
-    h+='<button class="sel-btn" id="aud_'+k+'" onclick="pickAud(\''+k+'\')">';
-    h+='<span class="s-key">'+String.fromCharCode(65+ai)+'</span>';
-    h+='<span><strong>'+d.label+'</strong><br><span style="font-size:.78rem;color:var(--muted)">'+d.desc+'</span></span>';
-    h+='</button>'; ai++;
-  });
-  h+='</div></div>';
+  state.streak = 0;
+  state.lastAnswerCorrect = false;
+  loseLife();
 
-  // Freetext
-  h+='<div class="qblock">';
-  h+='<div class="q-label">1.3 &middot; Quick Pick &middot; Strategy Statement</div>';
-  h+='<div class="q-text">Which statement best describes your strategic approach?</div>';
-  h+='<button class="sel-btn" id="mc1_a" onclick="pickMC1(\'a\')"><span class="s-key">A</span><span><strong>Grow fast, worry about profit later</strong><br><span style="font-size:.78rem;color:var(--muted)">Prioritise reach and acquisition volume above all else.</span></span></button>';
-  h+='<button class="sel-btn" id="mc1_b" onclick="pickMC1(\'b\')"><span class="s-key">B</span><span><strong>Balance growth with sustainable unit economics</strong><br><span style="font-size:.78rem;color:var(--muted)">Acquire efficiently and keep customers long enough to profit.</span></span></button>';
-  h+='<button class="sel-btn" id="mc1_c" onclick="pickMC1(\'c\')"><span class="s-key">C</span><span><strong>Minimise spend, maximise loyalty</strong><br><span style="font-size:.78rem;color:var(--muted)">Focus on retention — let loyal customers drive growth.</span></span></button>';
-  h+='<button class="sel-btn" id="mc1_d" onclick="pickMC1(\'d\')"><span class="s-key">D</span><span><strong>High risk, high reward</strong><br><span style="font-size:.78rem;color:var(--muted)">Bold, disruptive tactics to break through in a crowded market.</span></span></button>';
-  h+='</div>';
-
-  document.getElementById('gameBody').innerHTML=h;
-  if(G.p1mc) pickMC1(G.p1mc);
-  if(G.objective) pickObj(G.objective);
-  if(G.audience) pickAud(G.audience);
-  if(G.p1text){document.getElementById('p1txt').value=G.p1text;ftCount('p1txt','p1cnt');}
-}
-
-function pickObj(k){
-  G.objective=k;
-  Object.keys(OBJ_DATA).forEach(function(x){document.getElementById('obj_'+x).classList.remove('active');});
-  document.getElementById('obj_'+k).classList.add('active');
-}
-function pickAud(k){
-  G.audience=k;
-  Object.keys(AUD_DATA).forEach(function(x){document.getElementById('aud_'+x).classList.remove('active');});
-  document.getElementById('aud_'+k).classList.add('active');
-}
-
-// ── BUILD PHASE 2 ───────────────────────────────
-function buildPhase2(){
-  var h='<div class="phase-pill ph2"><span class="dot"></span>Phase 2 · Platform & Channel Strategy · 5 min</div>';
-  h+=makeBriefPanel();
-  h+=makeDecisionSummary(2);
-
-  // Platform
-  h+='<div class="qblock">';
-  h+='<div class="q-label">2.1 · Single Select · Platform</div>';
-  h+='<div class="q-text">Which mobile platform should NourishBox prioritise?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Platform choice affects both your cost base and your ability to retain customers. A dedicated app creates a deeper relationship. Mobile web is quicker to deploy but produces weaker loyalty signals.</div>';
-  h+='<div class="sel-grid">';
-  var pi=0;
-  Object.keys(PLAT_DATA).forEach(function(k){
-    var d=PLAT_DATA[k];
-    h+='<button class="sel-btn" id="plat_'+k+'" onclick="pickPlat(\''+k+'\')">';
-    h+='<span class="s-key">'+String.fromCharCode(65+pi)+'</span>';
-    h+='<span><strong>'+d.label+'</strong><br><span style="font-size:.78rem;color:var(--muted)">'+d.desc+'</span></span>';
-    h+='</button>'; pi++;
-  });
-  h+='</div></div>';
-
-  // Channels — multi-select with per-channel role toggle
-  h+='<div class="qblock">';
-  h+='<div class="q-label">2.2 · Multi-Select · Channel Mix</div>';
-  h+='<div class="q-text">Select your channels and tag each as Acquisition or Retention.</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Acquisition channels bring in new customers. Retention channels keep them engaged. If you select no retention channels, a penalty is applied to your final months. Balance your mix strategically.</div>';
-  h+='<div class="multi-grid" id="chGrid">';
-  CHANNEL_DATA.forEach(function(ch){
-    var chState=G.channels.find(function(c){return c.id===ch.id;});
-    var isActive=!!chState;
-    var role=chState?chState.role:'acq';
-    h+='<div class="multi-btn'+(isActive?' active':'')+'" id="ch_'+ch.id+'" onclick="toggleChan(\''+ch.id+'\')">';
-    h+='<div class="m-check"><svg viewBox="0 0 11 9" fill="none" stroke="#000" stroke-width="2.2"><polyline points="1,4.5 4,7.5 10,1"/></svg></div>';
-    h+='<div class="m-info"><div class="m-name">'+ch.label+'</div><div class="m-desc">'+ch.desc+'</div></div>';
-    h+='<div class="ch-role" onclick="event.stopPropagation()">';
-    h+='<button class="role-btn ra'+(role==='acq'?' sel':'')+'" id="ra_'+ch.id+'" onclick="setRole(\''+ch.id+'\',\'acq\')">ACQ</button>';
-    h+='<button class="role-btn rr'+(role==='ret'?' sel':'')+'" id="rr_'+ch.id+'" onclick="setRole(\''+ch.id+'\',\'ret\')">RET</button>';
-    h+='</div>';
-    h+='</div>';
-  });
-  h+='</div></div>';
-
-  // OTS slider — value shown IN the thumb
-  h+='<div class="qblock">';
-  h+='<div class="q-label">2.3 · Slider · Weekly Ad Frequency</div>';
-  h+='<div class="q-text">How many times per week should a potential NourishBox customer see the ad?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Frequency drives recall — but too many exposures cause fatigue and wasted budget. Find the optimal balance for your audience.</div>';
-  h+='<div class="slider-wrap">';
-  h+='<div class="slider-row">';
-  h+='<span class="slider-label">1</span>';
-  h+='<div class="custom-slider-track" id="otsTrack" onmousedown="sliderDown(event,\'ots\')" ontouchstart="sliderTouch(event,\'ots\')">';
-  h+='<div class="custom-slider-fill" id="otsFill"></div>';
-  h+='<div class="custom-slider-thumb" id="otsThumb">↔</div>';
-  h+='<input type="range" class="hidden-slider" id="otsSlider" min="0" max="10" value="0" oninput="syncSlider(\'ots\',this.value)">';
-  h+='</div>';
-  h+='<span class="slider-label">10</span>';
-  h+='</div></div></div>';
-
-  // Risk
-  h+='<div class="qblock">';
-  h+='<div class="q-label">2.4 · Single Select · Risk Profile</div>';
-  h+='<div class="q-text">Select your risk profile. This affects your SPI calibration in Phase 4.</div>';
-  h+='<div class="risk-row">';
-  h+='<div class="risk-card rc-safe" id="rsk_safe" onclick="pickRisk(\'safe\')"><div class="rc-name">Safe</div><div class="rc-desc">Proven channels and tested creatives. Lower variance, steadier returns.</div><div class="rc-badge">Lower variance</div></div>';
-  h+='<div class="risk-card rc-bal" id="rsk_bal" onclick="pickRisk(\'bal\')"><div class="rc-name">Balanced</div><div class="rc-desc">Mix of proven and experimental. Moderate upside and downside.</div><div class="rc-badge">Moderate variance</div></div>';
-  h+='<div class="risk-card rc-bold" id="rsk_bold" onclick="pickRisk(\'bold\')"><div class="rc-name">Bold</div><div class="rc-desc">Experimental channels and creative. High risk — big win or big loss.</div><div class="rc-badge" style="background:rgba(255,149,0,.12);color:#ff9500">High variance</div></div>';
-  h+='</div></div>';
-
-  // Freetext
-  h+='<div class="qblock">';
-  h+='<div class="q-label">2.5 &middot; Drag to Rank &middot; Channel Priority</div>';
-  h+='<div class="q-text">Drag to rank these three approaches by priority for NourishBox.</div>';
-  h+='<ul class="rank-list" id="rankList">';
-  h+='<li class="rank-item" draggable="true" data-val="awareness" ondragstart="rankDragStart(event)" ondragover="rankDragOver(event)" ondrop="rankDrop(event)" ontouchstart="rankTouchStart(event)" ontouchmove="rankTouchMove(event)" ontouchend="rankTouchEnd(event)"><span class="rank-handle">&#8942;&#8942;</span><span class="rank-num">1</span><span class="rank-lbl"><strong>Brand Awareness</strong> — broad reach, build recognition</span></li>';
-  h+='<li class="rank-item" draggable="true" data-val="acquisition" ondragstart="rankDragStart(event)" ondragover="rankDragOver(event)" ondrop="rankDrop(event)" ontouchstart="rankTouchStart(event)" ontouchmove="rankTouchMove(event)" ontouchend="rankTouchEnd(event)"><span class="rank-handle">&#8942;&#8942;</span><span class="rank-num">2</span><span class="rank-lbl"><strong>Direct Acquisition</strong> — drive trial and first purchase</span></li>';
-  h+='<li class="rank-item" draggable="true" data-val="retention" ondragstart="rankDragStart(event)" ondragover="rankDragOver(event)" ondrop="rankDrop(event)" ontouchstart="rankTouchStart(event)" ontouchmove="rankTouchMove(event)" ontouchend="rankTouchEnd(event)"><span class="rank-handle">&#8942;&#8942;</span><span class="rank-num">3</span><span class="rank-lbl"><strong>Retention &amp; Loyalty</strong> — keep existing subscribers</span></li>';
-  h+='</ul>';
-  h+='</div>';
-
-  document.getElementById('gameBody').innerHTML=h;
-  if(G.platform) pickPlat(G.platform);
-  if(G.risk) pickRisk(G.risk);
-  // OTS slider: start at 0 unless user previously set it
-  var otsVal = G.otsSet ? G.ots : 0;
-  syncSlider('ots', otsVal);
-  document.getElementById('otsSlider').value = otsVal;
-  if(G.p2text){document.getElementById('p2txt').value=G.p2text;ftCount('p2txt','p2cnt');}
-}
-
-function pickPlat(k){
-  G.platform=k;
-  Object.keys(PLAT_DATA).forEach(function(x){document.getElementById('plat_'+x).classList.remove('active');});
-  document.getElementById('plat_'+k).classList.add('active');
-}
-
-function toggleChan(id){
-  var el=document.getElementById('ch_'+id);
-  var idx=G.channels.findIndex(function(c){return c.id===id;});
-  if(idx===-1){
-    G.channels.push({id:id,role:'acq'});
-    el.classList.add('active');
-    document.getElementById('ra_'+id).classList.add('sel');
-    document.getElementById('rr_'+id).classList.remove('sel');
+  const isLastLevel = levelKey === '1';
+  const isGameOver = state.lives < 0 || isLastLevel;
+  if (isGameOver) {
+    showFeedback('timeout', '⏰ Time\'s up! Game Over.');
+    const btn2 = document.getElementById('btnNext');
+    if (btn2) btn2.textContent = '💔 See Results';
+  } else if (state.lives === 0) {
+    showFeedback('timeout', `⏰ Time\'s up! You lost a life. No lives remaining — one more wrong and it's Game Over.`);
   } else {
-    G.channels.splice(idx,1);
-    el.classList.remove('active');
+    showFeedback('timeout', `⏰ Time\'s up! You lost a life. ${state.lives} ${state.lives === 1 ? 'life' : 'lives'} remaining.`);
   }
 }
 
-function setRole(id, role){
-  var ch=G.channels.find(function(c){return c.id===id;});
-  if(!ch){
-    // auto-select channel if role toggled before selecting
-    G.channels.push({id:id,role:role});
-    document.getElementById('ch_'+id).classList.add('active');
+/* ── SELECT ANSWER ── */
+function selectAnswer(idx) {
+  if (state.answered) return;
+  clearTimer();
+  state.answered = true;
+  disableAnswers();
+
+  const opt = state.currentOptions[idx];
+  const timeBonus = calcTimeBonus(state.timerVal);
+
+  if (opt.isCorrect) {
+    document.getElementById(`ans${idx}`).classList.add('correct');
+    state.correctCount++;
+    state.streak++;
+    state.lastAnswerCorrect = true;
+
+    const levelKey = LEVEL_ORDER[state.levelIdx];
+    let pts = QUESTION_BANK[levelKey].pts + timeBonus;
+    let msg = `✅ Correct! +${QUESTION_BANK[levelKey].pts} pts`;
+
+    if (timeBonus > 0) {
+      msg += ` +${timeBonus} speed bonus`;
+      showBonusPopup(`+${timeBonus}`, 'Speed Bonus');
+    }
+
+    // Streak bonuses
+    if (state.streak === 5) {
+      pts += 25;
+      msg += ' · 🔥🔥 5-streak +25!';
+      showStreakBanner('🔥🔥 5-STREAK BONUS! +25 PTS');
+    } else if (state.streak === 3) {
+      pts += 10;
+      msg += ' · 🔥 3-streak +10!';
+      showStreakBanner('🔥 3-STREAK BONUS! +10 PTS');
+    } else if (state.streak > 5 && state.streak % 2 === 0) {
+      pts += 15;
+      msg += ` · 🔥 ${state.streak}-streak +15!`;
+      showStreakBanner(`🔥 ${state.streak}-STREAK BONUS! +15 PTS`);
+    }
+
+    state.score += pts;
+    updateScore();
+    showFeedback('correct', msg);
   } else {
-    ch.role=role;
-  }
-  document.getElementById('ra_'+id).classList.toggle('sel', role==='acq');
-  document.getElementById('rr_'+id).classList.toggle('sel', role==='ret');
-}
-
-function pickRisk(k){
-  G.risk=k;
-  ['safe','bal','bold'].forEach(function(x){document.getElementById('rsk_'+x).classList.remove('active');});
-  document.getElementById('rsk_'+k).classList.add('active');
-}
-
-// ── SLIDER LOGIC ────────────────────────────────
-function syncSlider(name, val){
-  val=Math.round(val);
-  if(name==='ots'){ G.ots=val; if(val>0) G.otsSet=true; }
-  if(name==='vd') { G.viewDur=val; if(val>0) G.viewDurSet=true; }
-  var track=document.getElementById(name==='ots'?'otsTrack':'vdTrack');
-  var fill=document.getElementById(name==='ots'?'otsFill':'vdFill');
-  var thumb=document.getElementById(name==='ots'?'otsThumb':'vdThumb');
-  if(!track) return;
-  var pct=val/10*100; // range 0–10
-  fill.style.width=pct+'%';
-  // Centre thumb on position: at 0% thumb at left edge, at 100% at right edge
-  thumb.style.left='calc('+pct+'% - '+(pct/100*32-16)+'px)';
-  thumb.textContent = val===0 ? '↔' : val;
-}
-
-function sliderDown(e,name){
-  e.preventDefault();
-  var track=document.getElementById(name==='ots'?'otsTrack':'vdTrack');
-  function move(ev){
-    var rect=track.getBoundingClientRect();
-    var x=(ev.touches?ev.touches[0].clientX:ev.clientX)-rect.left;
-    var pct=Math.max(0,Math.min(1,x/rect.width));
-    var val=Math.round(pct*10); // 0–10
-    syncSlider(name,val);
-    document.getElementById(name==='ots'?'otsSlider':'vdSlider').value=val;
-    document.getElementById(name==='ots'?'otsSlider':'vdSlider').value=val;
-  }
-  function up(){document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);}
-  document.addEventListener('mousemove',move);
-  document.addEventListener('mouseup',up);
-  move(e);
-}
-function sliderTouch(e,name){
-  var track=document.getElementById(name==='ots'?'otsTrack':'vdTrack');
-  function move(ev){
-    var rect=track.getBoundingClientRect();
-    var x=ev.touches[0].clientX-rect.left;
-    var pct=Math.max(0,Math.min(1,x/rect.width));
-    var val=Math.round(pct*10);
-    syncSlider(name,val);
-  }
-  document.addEventListener('touchmove',move,{passive:true});
-  document.addEventListener('touchend',function(){document.removeEventListener('touchmove',move);},{once:true});
-  move(e);
-}
-
-// ── BUILD PHASE 3 ───────────────────────────────
-function buildPhase3(){
-  var h='<div class="phase-pill ph3"><span class="dot"></span>Phase 3 · Creative & Execution · 5 min</div>';
-  h+=makeBriefPanel();
-  h+=makeDecisionSummary(3);
-
-  // Hook
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.1 · Single Select · Creative Hook</div>';
-  h+='<div class="q-text">Which creative hook should NourishBox lead with?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> The hook is the first thing a potential customer sees. It determines whether they stop scrolling. Your chosen audience is <strong>'+(G.audience?AUD_DATA[G.audience].label:'your selected audience')+'</strong>.</div>';
-  h+='<div class="sel-grid">';
-  var hi=0;
-  Object.keys(HOOK_DATA).forEach(function(k){
-    var d=HOOK_DATA[k];
-    h+='<button class="sel-btn" id="hook_'+k+'" onclick="pickHook(\''+k+'\')">';
-    h+='<span class="s-key">'+String.fromCharCode(65+hi)+'</span>';
-    h+='<span><strong>'+d.label+'</strong><br><span style="font-size:.78rem;color:var(--muted)">'+d.desc+'</span></span>';
-    h+='</button>'; hi++;
-  });
-  h+='</div></div>';
-
-  // Format — multi-select
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.2 · Multi-Select · Ad Format</div>';
-  h+='<div class="q-text">Which creative format(s) should NourishBox use for mobile ads?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Different formats suit different audiences and objectives. You can select more than one.</div>';
-  h+='<div class="multi-grid">';
-  Object.keys(FORMAT_DATA).forEach(function(k){
-    var d=FORMAT_DATA[k];
-    var isActive=G.formats.indexOf(k)!==-1;
-    h+='<div class="multi-btn'+(isActive?' active':'')+'" id="fmt_'+k+'" onclick="toggleFmt(\''+k+'\')">';
-    h+='<div class="m-check"><svg viewBox="0 0 11 9" fill="none" stroke="#000" stroke-width="2.2"><polyline points="1,4.5 4,7.5 10,1"/></svg></div>';
-    h+='<div class="m-info"><div class="m-name">'+d.label+'</div><div class="m-desc">'+d.desc+'</div></div>';
-    h+='</div>';
-  });
-  h+='</div></div>';
-
-  // Sound
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.3 · Single Select · Sound Strategy</div>';
-  h+='<div class="q-text">Should the NourishBox mobile ad be optimised for sound-off or require sound-on?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Most mobile video is consumed in environments where sound is unavailable or disabled. Consider what this means for your creative approach.</div>';
-  h+='<div class="sel-grid">';
-  h+='<button class="sel-btn" id="snd_off" onclick="pickSound(\'off\')"><span class="s-key">A</span><span><strong>Sound-Off Optimised</strong><br><span style="font-size:.78rem;color:var(--muted)">Captions and visual-first storytelling.</span></span></button>';
-  h+='<button class="sel-btn" id="snd_on" onclick="pickSound(\'on\')"><span class="s-key">B</span><span><strong>Sound-On Required</strong><br><span style="font-size:.78rem;color:var(--muted)">Narration-dependent creative.</span></span></button>';
-  h+='</div></div>';
-
-  // View Duration — branded slider
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.4 · Slider · View Duration</div>';
-  h+='<div class="q-text">How many seconds of view time should the ad target before the call-to-action appears?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Mobile attention windows are short. Too brief and value is unclear. Too long and drop-off rate kills campaign efficiency.</div>';
-  h+='<div class="slider-wrap">';
-  h+='<div class="slider-row">';
-  h+='<span class="slider-label">1</span>';
-  h+='<div class="custom-slider-track" id="vdTrack" onmousedown="sliderDown(event,\'vd\')" ontouchstart="sliderTouch(event,\'vd\')">';
-  h+='<div class="custom-slider-fill" id="vdFill"></div>';
-  h+='<div class="custom-slider-thumb" id="vdThumb">↔</div>';
-  h+='<input type="range" class="hidden-slider" id="vdSlider" min="0" max="10" value="0" oninput="syncSlider(\'vd\',this.value)">';
-  h+='</div>';
-  h+='<span class="slider-label">10</span>';
-  h+='</div></div></div>';
-
-  // Orientation
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.5 · Single Select · Creative Orientation</div>';
-  h+='<div class="q-text">Which screen orientation should NourishBox use for mobile ads?</div>';
-  h+='<div class="q-ctx"><strong>Context:</strong> Consider how your target audience holds and uses their phone when consuming content on the platforms you have selected.</div>';
-  h+='<div class="sel-grid">';
-  h+='<button class="sel-btn" id="ori_vertical" onclick="pickOri(\'vertical\')"><span class="s-key">A</span><span><strong>Vertical (9:16)</strong><br><span style="font-size:.78rem;color:var(--muted)">Portrait format, native to mobile.</span></span></button>';
-  h+='<button class="sel-btn" id="ori_horizontal" onclick="pickOri(\'horizontal\')"><span class="s-key">B</span><span><strong>Horizontal (16:9)</strong><br><span style="font-size:.78rem;color:var(--muted)">Landscape format, common on desktop.</span></span></button>';
-  h+='</div></div>';
-
-  // Freetext
-  h+='<div class="qblock">';
-  h+='<div class="q-label">3.6 &middot; Quick Pick &middot; Creative Philosophy</div>';
-  h+='<div class="q-text">Which statement best describes your creative strategy?</div>';
-  h+='<button class="sel-btn" id="mc3_a" onclick="pickMC3(\'a\')"><span class="s-key">A</span><span><strong>Lead with a deal — urgency drives action</strong><br><span style="font-size:.78rem;color:var(--muted)">Price-led creative converts fast but attracts bargain hunters.</span></span></button>';
-  h+='<button class="sel-btn" id="mc3_b" onclick="pickMC3(\'b\')"><span class="s-key">B</span><span><strong>Tell a story — emotion builds loyalty</strong><br><span style="font-size:.78rem;color:var(--muted)">Lifestyle-led creative builds brand affinity over time.</span></span></button>';
-  h+='<button class="sel-btn" id="mc3_c" onclick="pickMC3(\'c\')"><span class="s-key">C</span><span><strong>Solve a problem — relevance earns trust</strong><br><span style="font-size:.78rem;color:var(--muted)">Problem-solution framing works across acquisition and retention.</span></span></button>';
-  h+='<button class="sel-btn" id="mc3_d" onclick="pickMC3(\'d\')"><span class="s-key">D</span><span><strong>Entertain first — engagement leads conversion</strong><br><span style="font-size:.78rem;color:var(--muted)">Fun, shareable content builds organic reach and brand love.</span></span></button>';
-  h+='</div>';
-
-  document.getElementById('gameBody').innerHTML=h;
-  // Only restore state if user had previously made a selection (no defaults pre-applied)
-  if(G.p3mc) pickMC3(G.p3mc);
-  if(G.hook) pickHook(G.hook);
-  G.formats.forEach(function(k){
-    var el=document.getElementById('fmt_'+k);
-    if(el) el.classList.add('active');
-  });
-  if(G.sound) pickSound(G.sound);           // only if user chose one
-  if(G.orientation) pickOri(G.orientation); // only if user chose one
-  // Slider: start at 0 (unset) unless user previously moved it
-  var vdVal = G.viewDurSet ? G.viewDur : 0;
-  syncSlider('vd', vdVal);
-  document.getElementById('vdSlider').value = vdVal;
-  if(G.p3text){document.getElementById('p3txt').value=G.p3text;ftCount('p3txt','p3cnt');}
-}
-
-function pickHook(k){
-  G.hook=k;
-  Object.keys(HOOK_DATA).forEach(function(x){document.getElementById('hook_'+x).classList.remove('active');});
-  document.getElementById('hook_'+k).classList.add('active');
-}
-function toggleFmt(k){
-  var el=document.getElementById('fmt_'+k);
-  var idx=G.formats.indexOf(k);
-  if(idx===-1){G.formats.push(k);el.classList.add('active');}
-  else{G.formats.splice(idx,1);el.classList.remove('active');}
-}
-function pickSound(v){
-  G.sound=v;
-  ['off','on'].forEach(function(x){document.getElementById('snd_'+x).classList.remove('active');});
-  document.getElementById('snd_'+v).classList.add('active');
-}
-function pickOri(v){
-  G.orientation=v;
-  ['vertical','horizontal'].forEach(function(x){document.getElementById('ori_'+x).classList.remove('active');});
-  document.getElementById('ori_'+v).classList.add('active');
-}
-
-// ── WORD COUNT ──────────────────────────────────
-function ftCount(tid,cid){
-  var el=document.getElementById(tid), co=document.getElementById(cid);
-  if(!el||!co) return;
-  var w=el.value.trim()?el.value.trim().split(/\s+/).length:0;
-  co.textContent=w+' / 150 words';
-  co.className='ft-count'+(w>150?' warn':'');
-}
-
-// ── SUBMIT ──────────────────────────────────────
-document.getElementById('btnSub').addEventListener('click',function(){
-  document.getElementById('modal').classList.add('on');
-});
-
-// "Next Phase" button — goes straight to next phase (no intermediate screen)
-document.getElementById('btnNext').addEventListener('click',function(){
-  if(G.phase<3) loadPhase(G.phase+1, true);
-  else runFinancialEngine();
-});
-
-function doSubmit(){
-  clearInterval(_timer);
-  // Save freetext from current phase
-  var p=G.phase;
-  if(p===1){var e=document.getElementById('p1txt');if(e)G.p1text=e.value.trim();}
-  if(p===2){
-    var e=document.getElementById('p2txt');if(e)G.p2text=e.value.trim();
-    var sv=document.getElementById('otsSlider');if(sv){G.ots=parseInt(sv.value)||0;}
-  }
-  if(p===3){
-    var e=document.getElementById('p3txt');if(e)G.p3text=e.value.trim();
-    var sv=document.getElementById('vdSlider');if(sv){G.viewDur=parseInt(sv.value)||0;}
-  }
-
-  // ── Immediately load next phase (no "next" button needed) ──
-  if(G.phase<3){
-    flash('Phase '+G.phase+' ✓');
-    loadPhase(G.phase+1, true);
-  } else {
-    flash('Phase 3 ✓');
-    runFinancialEngine();
+    document.getElementById(`ans${idx}`).classList.add('wrong');
+    state.lastAnswerCorrect = false;
+    state.currentOptions.forEach((o, i) => {
+      if (o.isCorrect) document.getElementById(`ans${i}`).classList.add('correct');
+    });
+    state.streak = 0;
+    document.getElementById('answersDiv').classList.add('shake');
+    loseLife();
+    const levelKey2 = LEVEL_ORDER[state.levelIdx];
+    const isLastLevel2 = levelKey2 === '1';
+    const isGameOver = state.lives < 0 || isLastLevel2;
+    if (isGameOver) {
+      showFeedback('wrong', `❌ Not quite! The correct answer is highlighted. Game Over.`);
+      const btn = document.getElementById('btnNext');
+      if (btn) btn.textContent = '💔 See Results';
+    } else if (state.lives === 0) {
+      showFeedback('wrong', `❌ Not quite! The correct answer is highlighted. No lives remaining — one more wrong and it's Game Over.`);
+    } else {
+      showFeedback('wrong', `❌ Not quite! The correct answer is highlighted. ${state.lives} ${state.lives === 1 ? 'life' : 'lives'} remaining.`);
+    }
   }
 }
 
-// ── FINANCIAL ENGINE ────────────────────────────
-function runFinancialEngine(){
-  clearInterval(_timer);
-  show('s-reveal');
+function calcTimeBonus(timeLeft) {
+  if (timeLeft > 35) return 10; // answered < 10s
+  if (timeLeft > 25) return 5;  // answered < 20s
+  return 0;
+}
 
-  var aud=G.audience?AUD_DATA[G.audience]:{baseCPA:40,baseMonths:4};
-  var obj=G.objective?OBJ_DATA[G.objective]:{cpaMod:0,monthsMod:0};
-  var plat=G.platform?PLAT_DATA[G.platform]:{cpaMod:0,monthsMod:0};
+function disableAnswers() {
+  document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+}
 
-  // CPA — start from audience base
-  var cpa=aud.baseCPA+obj.cpaMod+plat.cpaMod;
-  var months=aud.baseMonths+obj.monthsMod+plat.monthsMod;
-
-  // Channels
-  var hasRet=false;
-  G.channels.forEach(function(ch){
-    var mod=CH_MOD[ch.id]?CH_MOD[ch.id][ch.role]:{cpaMod:0,monthsMod:0};
-    cpa+=mod.cpaMod; months+=mod.monthsMod;
-    if(ch.role==='ret') hasRet=true;
-  });
-  if(G.channels.length>0&&!hasRet) months-=2;
-
-  // Hook & format (use first selected for hook; aggregate formats)
-  var hook=G.hook?HOOK_DATA[G.hook]:{cpaMod:0,monthsMod:0};
-  cpa+=hook.cpaMod; months+=hook.monthsMod;
-  G.formats.forEach(function(k){
-    var f=FORMAT_DATA[k];
-    if(f){cpa+=f.cpaMod;months+=f.monthsMod;}
-  });
-
-  cpa=Math.max(5,cpa);
-  months=Math.max(1,months);
-
-  G.finalCPA=Math.round(cpa*100)/100;
-  G.finalMonths=Math.round(months*10)/10;
-  G.ltv=MONTHLY_PROFIT*G.finalMonths;
-  G.profit=G.ltv-G.finalCPA;
-
-  // ── SPI ──────────────────────────────────────
-  // Profit score (0–40)
-  var ps=0;
-  if(G.profit>=70)ps=40; else if(G.profit>=50)ps=35;
-  else if(G.profit>=30)ps=30; else if(G.profit>=10)ps=20;
-  else if(G.profit>=0)ps=10; else ps=0;
-
-  // Retention (0–20)
-  var rs=0;
-  if(G.finalMonths>=9)rs=20; else if(G.finalMonths>=7)rs=16;
-  else if(G.finalMonths>=5)rs=12; else if(G.finalMonths>=3)rs=6; else rs=0;
-
-  // Alignment (0–20)
-  var al=calcAlignment();
-  // Risk (0–20)
-  var rk=calcRiskScore();
-  // Exec penalties (max 30)
-  var pen=0;
-  // OTS: 0 = not set (no penalty, but no points); 1-2 = too low; 3-5 = optimal; 6-7 = high; 8-10 = too high
-  if(G.otsSet){
-    if(G.ots<=2)pen+=5; else if(G.ots>=8)pen+=10; else if(G.ots>=6)pen+=5;
+/* ── FEEDBACK ── */
+function showFeedback(type, msg) {
+  const bar = document.getElementById('feedbackBar');
+  bar.className = `feedback-bar ${type} show`;
+  bar.textContent = msg;
+  const btn = document.getElementById('btnNext');
+  if (btn) {
+    btn.classList.add('show');
+    btn.onclick = () => nextQuestion();
   }
-  // View duration: same logic
-  if(G.viewDurSet){
-    if(G.viewDur<=2)pen+=5; else if(G.viewDur>=8)pen+=10; else if(G.viewDur>=6)pen+=5;
+}
+
+/* ── SCORE ── */
+function updateScore() {
+  const el = document.getElementById('scoreVal');
+  el.textContent = state.score;
+  el.classList.remove('score-flash');
+  void el.offsetWidth;
+  el.classList.add('score-flash');
+}
+
+/* ── LIVES ── */
+function updateLivesDisplay() {
+  const l1 = document.getElementById('life1');
+  const l2 = document.getElementById('life2');
+  if (!l1 || !l2) return;
+
+  const was2Full = !l2.classList.contains('lost');
+  const now2Full = state.lives >= 2;
+  const was1Full = !l1.classList.contains('lost');
+  const now1Full = state.lives >= 1;
+
+  if (was2Full && !now2Full) {
+    l2.classList.add('losing');
+    setTimeout(() => {
+      l2.classList.remove('losing');
+      l2.classList.add('lost');
+      l2.textContent = '🖤';
+    }, 300);
+  } else if (!was2Full && now2Full) {
+    l2.classList.remove('lost', 'losing');
+    l2.textContent = '❤️';
   }
-  if(G.sound==='on')pen+=5;
-  if(G.orientation==='horizontal')pen+=5;
-  pen=Math.min(30,pen);
-  // Written bonus (0–10)
-  var bon=calcWrittenBonus();
 
-  G.spi=Math.max(0,Math.min(120,ps+rs+al+rk+bon-pen));
-  G.profitScore=ps; G.retentionScore=rs; G.alignScore=al; G.riskScore=rk;
-  G.execPenalty=pen; G.writtenBonus=bon;
-  G.completedAt=new Date().toISOString();
-  saveTeam();
-  buildReveal();
-}
-
-function calcAlignment(){
-  var s=0;
-  if(G.objective==='profit')s+=8; else if(G.objective==='balanced')s+=6; else s+=3;
-  if(G.audience==='families')s+=7; else if(G.audience==='young')s+=5; else s+=2;
-  var hasRet=G.channels.some(function(c){return c.role==='ret';});
-  if(hasRet)s+=5;
-  return Math.min(20,s);
-}
-function calcRiskScore(){
-  if(!G.risk)return 8;
-  var profitable=G.profit>0, high=G.profit>=50;
-  if(G.risk==='bold'){return high?20:profitable?10:0;}
-  if(G.risk==='bal'){return profitable?15:5;}
-  return G.profit>=10&&G.profit<50?15:G.profit>=50?10:5;
-}
-function calcWrittenBonus(){
-  var s = 0;
-  // P1 MC: B (balanced) aligns best with profit/balanced objectives
-  if(G.p1mc==='b') s+=3; else if(G.p1mc==='c') s+=2; else if(G.p1mc) s+=1;
-  // P2 Rank: retention first scores highest (LTV focus)
-  if(G.p2rank && G.p2rank[0]==='retention') s+=3;
-  else if(G.p2rank && G.p2rank[0]==='acquisition') s+=2;
-  else if(G.p2rank) s+=1;
-  // P3 MC: B or C (story/problem-solution) align with retention
-  if(G.p3mc==='b'||G.p3mc==='c') s+=4; else if(G.p3mc==='d') s+=3; else if(G.p3mc) s+=1;
-  return s;
-}
-function scoreKW(txt,kws,max){ return 0; }
-
-// ── BUILD REVEAL ────────────────────────────────
-function buildReveal(){
-  var audD=G.audience?AUD_DATA[G.audience]:{baseCPA:40,baseMonths:4,label:'Not selected'};
-  var objD=G.objective?OBJ_DATA[G.objective]:{cpaMod:0,monthsMod:0,label:'Not selected'};
-  var platD=G.platform?PLAT_DATA[G.platform]:{cpaMod:0,monthsMod:0,label:'Not selected'};
-  var hookD=G.hook?HOOK_DATA[G.hook]:{cpaMod:0,monthsMod:0};
-
-  function cpaClass(v){return v<0?'cpa-good':v>0?'cpa-bad':'neutral';}
-  function signCPA(v){return v===0?'—':(v>0?'+':'')+' £'+Math.abs(v).toFixed(2);}
-  function signMo(v){return v===0?'—':(v>0?'+':'')+v.toFixed(1)+' mo';}
-
-  var h='<div class="calc-section">CPA Calculation</div>';
-  h+='<div class="calc-row"><span class="calc-label">Base CPA ('+esc(audD.label)+')</span><span class="calc-val neutral">£'+audD.baseCPA.toFixed(2)+'</span></div>';
-  if(G.objective){var v=objD.cpaMod;h+='<div class="calc-row"><span class="calc-label">Objective: '+esc(objD.label)+'</span><span class="calc-val '+cpaClass(v)+'">'+signCPA(v)+'</span></div>';}
-  if(G.platform){var v=platD.cpaMod;h+='<div class="calc-row"><span class="calc-label">Platform: '+esc(platD.label)+'</span><span class="calc-val '+cpaClass(v)+'">'+signCPA(v)+'</span></div>';}
-
-  if(G.channels.length){
-    var cm=0;
-    G.channels.forEach(function(ch){var mod=CH_MOD[ch.id]?CH_MOD[ch.id][ch.role]:{cpaMod:0};cm+=mod.cpaMod;});
-    h+='<div class="calc-row"><span class="calc-label">Channels ('+G.channels.length+' selected)</span><span class="calc-val '+cpaClass(cm)+'">'+signCPA(cm)+'</span></div>';
+  if (was1Full && !now1Full) {
+    l1.classList.add('losing');
+    setTimeout(() => {
+      l1.classList.remove('losing');
+      l1.classList.add('lost');
+      l1.textContent = '🖤';
+    }, 300);
+  } else if (!was1Full && now1Full) {
+    l1.classList.remove('lost', 'losing');
+    l1.textContent = '❤️';
   }
-  if(G.hook){var v=hookD.cpaMod;h+='<div class="calc-row"><span class="calc-label">Hook: '+esc(HOOK_DATA[G.hook].label)+'</span><span class="calc-val '+cpaClass(v)+'">'+signCPA(v)+'</span></div>';}
-  if(G.formats.length){
-    var fm=0; G.formats.forEach(function(k){if(FORMAT_DATA[k])fm+=FORMAT_DATA[k].cpaMod;});
-    h+='<div class="calc-row"><span class="calc-label">Format(s)</span><span class="calc-val '+cpaClass(fm)+'">'+signCPA(fm)+'</span></div>';
+}
+
+function loseLife() {
+  state.lives--;
+  updateLivesDisplay();
+}
+
+/* ── PASS ── */
+function updatePassBtn() {
+  const btn = document.getElementById('btnPass');
+  const levelKey = LEVEL_ORDER[state.levelIdx];
+  const levelData = QUESTION_BANK[levelKey];
+  const forbidden = levelData.canPass === false;
+  btn.disabled = !state.hasPass || forbidden;
+  btn.textContent = state.hasPass ? '🎟️ PASS' : '🎟️ Used';
+  if (forbidden && state.hasPass) btn.title = 'Pass not available at this level';
+}
+
+function usePass() {
+  if (!state.hasPass) return;
+  const levelKey = LEVEL_ORDER[state.levelIdx];
+  const levelData = QUESTION_BANK[levelKey];
+  if (levelData.canPass === false) return;
+
+  state.hasPass = false;
+  clearTimer();
+  state.answered = true;
+  disableAnswers();
+  showFeedback('timeout', '🎟️ Pass used! Moving to next level with no penalty.');
+  const btn = document.getElementById('btnNext');
+  if (btn) {
+    btn.classList.add('show');
+    btn.textContent = state.levelIdx === LEVEL_ORDER.length - 1 ? '🏆 Claim Your Crown' : 'Next Level →';
+    btn.onclick = () => nextQuestion();
   }
-  h+='<div class="calc-row total"><span class="calc-label">Final CPA</span><span class="calc-val neutral">£'+G.finalCPA.toFixed(2)+'</span></div>';
+  updatePassBtn();
+  // Streak stays intact on pass
+}
 
-  h+='<hr class="calc-sep">';
-  h+='<div class="calc-section">Retention & LTV</div>';
-  h+='<div class="calc-row"><span class="calc-label">Base Months ('+esc(audD.label)+')</span><span class="calc-val neutral">'+audD.baseMonths+' months</span></div>';
-
-  var retMods=[];
-  if(G.objective){var v=objD.monthsMod;if(v!==0)retMods.push('Objective: '+signMo(v));}
-  if(G.platform){var v=platD.monthsMod;if(v!==0)retMods.push('Platform: '+signMo(v));}
-  G.channels.forEach(function(ch){var mod=CH_MOD[ch.id]?CH_MOD[ch.id][ch.role]:{monthsMod:0};if(mod.monthsMod!==0)retMods.push(ch.id+' ('+ch.role+'): '+signMo(mod.monthsMod));});
-  var hasRet2=G.channels.some(function(c){return c.role==='ret';});
-  if(G.channels.length>0&&!hasRet2)retMods.push('No retention channel: -2.0 mo');
-  if(G.hook){var v=hookD.monthsMod;if(v!==0)retMods.push('Hook: '+signMo(v));}
-  G.formats.forEach(function(k){if(FORMAT_DATA[k]&&FORMAT_DATA[k].monthsMod!==0)retMods.push('Format '+k+': '+signMo(FORMAT_DATA[k].monthsMod));});
-  if(retMods.length)h+='<div class="calc-row"><span class="calc-label">Modifiers</span><span class="calc-val" style="text-align:right;font-size:.78rem;color:var(--muted)">'+retMods.join('<br>')+'</span></div>';
-
-  h+='<div class="calc-row"><span class="calc-label">Final Months</span><span class="calc-val neutral">'+G.finalMonths+' months</span></div>';
-  h+='<div class="calc-row"><span class="calc-label">LTV (£15 × '+G.finalMonths+')</span><span class="calc-val neutral">£'+G.ltv.toFixed(2)+'</span></div>';
-  h+='<div class="calc-row total"><span class="calc-label">Profit per Customer</span><span class="calc-val '+(G.profit>=0?'profit-pos':'profit-neg')+'">'+(G.profit>=0?'+':'')+'£'+G.profit.toFixed(2)+'</span></div>';
-
-  document.getElementById('revCalc').innerHTML=h;
-
-  var pb=document.getElementById('profitBanner');
-  if(G.profit>=0){
-    pb.className='profit-banner win';
-    document.getElementById('pbanLbl').className='pban-label win'; document.getElementById('pbanLbl').textContent='PROFITABLE';
-    document.getElementById('pbanNum').className='pban-num win'; document.getElementById('pbanNum').textContent='+£'+G.profit.toFixed(2)+' per customer';
-  } else {
-    pb.className='profit-banner loss';
-    document.getElementById('pbanLbl').className='pban-label loss'; document.getElementById('pbanLbl').textContent='UNPROFITABLE';
-    document.getElementById('pbanNum').className='pban-num loss'; document.getElementById('pbanNum').textContent='-£'+Math.abs(G.profit).toFixed(2)+' per customer';
+/* ── NEXT QUESTION ── */
+function nextQuestion() {
+  // 1% level: correct = win, wrong/timeout = instant game over
+  if (LEVEL_ORDER[state.levelIdx] === '1') {
+    if (state.lastAnswerCorrect) { triggerWin(); return; }
+    else { triggerGameOver(); return; }
   }
-  document.getElementById('pbanSub').textContent='LTV £'+G.ltv.toFixed(2)+' vs CPA £'+G.finalCPA.toFixed(2);
+  // Lives below 0 = game over (lives=0 means last shield just gone, still alive but vulnerable)
+  if (state.lives < 0) {
+    triggerGameOver();
+    return;
+  }
+  // Advance to next level
+  state.levelIdx++;
+  renderQuestion();
 }
 
-document.getElementById('btnRevealSPI').addEventListener('click',function(){showResults();});
+/* ── GAME OVER ── */
+function triggerGameOver() {
+  clearTimer();
+  const failedKey = LEVEL_ORDER[Math.min(state.levelIdx, LEVEL_ORDER.length - 1)];
+  const failedLabel = QUESTION_BANK[failedKey].label;
+  const lastCompletedIdx = state.levelIdx - 1;
 
-// ── RESULTS ─────────────────────────────────────
-// SPI score explanations for ? tooltips
-var SPI_TIPS={
-  'Profit Score':{title:'Profit Score (0–40)',body:'Based on your <strong>profit per customer</strong> (LTV minus CPA). The higher your profit, the higher this score.<br><br>£70+ = 40 pts · £50–70 = 35 · £30–49 = 30 · £10–29 = 20 · £0–9 = 10 · Loss = 0'},
-  'Retention Score':{title:'Retention Score (0–20)',body:'Based on how many <strong>months your customers stay</strong>. Longer retention means higher LTV and a more sustainable business.<br><br>9+ months = 20 · 7–8 = 16 · 5–6 = 12 · 3–4 = 6 · 1–2 = 0'},
-  'Strategic Alignment':{title:'Strategic Alignment (0–20)',body:'Measures whether your decisions <strong>reinforce each other</strong>. Did your objective, audience, and channel mix all point in the same direction? Contradictory choices reduce this score.'},
-  'Risk Calibration':{title:'Risk Calibration (0–20)',body:'Did your <strong>risk profile match your actual result</strong>?<br><br>Bold + High Profit = 20 · Bold + Loss = 0<br>Balanced + Profitable = 15 · Safe + Modest Profit = 15<br>Risk must match outcome to score well.'},
-  'Written Bonus':{title:'Written Bonus (0–10)',body:'Awarded for the quality of your <strong>written justifications</strong> across the three phases. Responses that reference strategic concepts (CAC, LTV, retention, alignment, frequency) score higher.<br><br>P1 = up to 3 · P2 = up to 3 · P3 = up to 4'},
-  'Exec Penalty':{title:'Execution Penalty (up to –30)',body:'Deducted for <strong>poor execution decisions</strong> that would damage real campaigns:<br><br>OTS too low (1–2): –5 · OTS 6–7: –5 · OTS 8+: –10<br>View duration too short/long: same scale<br>Sound-on required: –5<br>Horizontal orientation: –5'}
-};
+  document.getElementById('overLevel').textContent = lastCompletedIdx >= 0
+    ? QUESTION_BANK[LEVEL_ORDER[lastCompletedIdx]].label + ' Level'
+    : 'None';
+  document.getElementById('overCorrect').textContent = state.correctCount + ' / ' + (state.levelIdx + 1);
+  document.getElementById('overScore').textContent = state.score;
 
-function showResults(){
-  show('s-results');
-  document.getElementById('resTeamName').textContent=G.team;
-  document.getElementById('resSPIBig').textContent=G.spi;
-  // Trophy based on result
-  document.getElementById('resTrophy').textContent=G.profit>=0?'🏆':'📉';
+  document.getElementById('compareMsg').innerHTML = lastCompletedIdx >= 0
+    ? `Eliminated at the <strong>${failedLabel}</strong> level. Keep studying and come back stronger!`
+    : 'Don\'t give up — digital marketing mastery takes practice!';
 
-  var pb=document.getElementById('perfBand');
-  if(G.spi>=100){pb.className='perf-band band-leader';pb.textContent='🏆 Strategic Leader';}
-  else if(G.spi>=80){pb.className='perf-band band-op';pb.textContent='📈 Sustainable Operator';}
-  else if(G.spi>=60){pb.className='perf-band band-fragile';pb.textContent='⚠ Fragile Growth';}
-  else{pb.className='perf-band band-vd';pb.textContent='📉 Value Destroyer';}
-
-  var scoreData=[
-    {lbl:'Profit Score',val:G.profitScore,max:40,col:'var(--brand1)'},
-    {lbl:'Retention Score',val:G.retentionScore,max:20,col:'var(--brand2)'},
-    {lbl:'Strategic Alignment',val:G.alignScore,max:20,col:'var(--brand1)'},
-    {lbl:'Risk Calibration',val:G.riskScore,max:20,col:'var(--brand2)'},
-    {lbl:'Written Bonus',val:G.writtenBonus,max:10,col:'var(--brand1)'},
-    {lbl:'Exec Penalty',val:-G.execPenalty,max:0,col:'var(--red)'}
-  ];
-  var sg=document.getElementById('scoreGrid');sg.innerHTML='';
-  scoreData.forEach(function(d){
-    var tip=SPI_TIPS[d.lbl];
-    var helpBtn=tip?'<span class="sc-help" onclick="openTip(\'SPI Score\',\''+esc(tip.title)+'\',\''+tip.body.replace(/'/g,'&#39;').replace(/"/g,'&quot;')+'\')" title="How is this calculated?">?</span>':'';
-    sg.innerHTML+='<div class="sc-cell">'
-      +'<div class="sc-cell-lbl">'+d.lbl+helpBtn+'</div>'
-      +'<div class="sc-cell-val" style="color:'+d.col+'">'+d.val+'</div>'
-      +'<div class="sc-cell-sub">out of '+d.max+'</div>'
-      +'</div>';
-  });
-
-  var bd=document.getElementById('resBadges');bd.innerHTML='';
-  if(G.spi>=100)bd.innerHTML+='<div class="badge bd-green">🏆 Strategic Leader</div>';
-  if(G.profit>=50)bd.innerHTML+='<div class="badge bd-green">💰 High Profit</div>';
-  if(G.finalMonths>=8)bd.innerHTML+='<div class="badge bd-purple">🔄 Retention Master</div>';
-  if(G.execPenalty===0)bd.innerHTML+='<div class="badge bd-green">✅ Zero Penalties</div>';
-  if(G.writtenBonus>=8)bd.innerHTML+='<div class="badge bd-purple">✍️ Strategic Thinker</div>';
-  if(G.profit<0)bd.innerHTML+='<div class="badge bd-red">📉 Unprofitable</div>';
+  showScreen('s-over');
 }
 
-// ── LEADERBOARD ─────────────────────────────────
-document.getElementById('btnGoLB').addEventListener('click',function(){showLeaderboard();});
-document.getElementById('btnMyResult').addEventListener('click',function(){showResults();});
+/* ── WIN ── */
+function triggerWin() {
+  clearTimer();
+  document.getElementById('winCorrect').textContent = state.correctCount + ' / 10';
+  document.getElementById('winScore').textContent = state.score;
 
-function showLeaderboard(){
-  show('s-leader');
-  var teams=getTeams().sort(function(a,b){return(b.spi||0)-(a.spi||0);});
-  var rl={safe:'Safe',bal:'Balanced',bold:'Bold'};
-  var rc={safe:'rt-safe',bal:'rt-bal',bold:'rt-bold'};
-  var body=document.getElementById('lbBody');
-  if(!teams.length){body.innerHTML='<div class="lb-empty">No completed teams yet — results will appear here as teams finish.</div>';return;}
-  var medals=['🥇','🥈','🥉'];
-  var h='<table class="lb-table"><thead><tr><th>#</th><th>Team</th><th>SPI</th><th>Profit</th><th>Months</th><th>Risk</th></tr></thead><tbody>';
-  teams.forEach(function(t,i){
-    var rtag=t.risk?'<span class="risk-tag '+rc[t.risk]+'">'+rl[t.risk]+'</span>':'—';
-    var isMe=t.team===G.team;
-    h+='<tr>';
-    h+='<td class="lb-rank '+(i<3?'r'+(i+1):'')+'">'+( i<3?medals[i]:i+1 )+'</td>';
-    h+='<td><strong>'+(isMe?'<span style="color:var(--brand1)">'+esc(t.team)+' ◀</span>':esc(t.team))+'</strong></td>';
-    h+='<td class="lb-spi">'+(t.spi||0)+'</td>';
-    h+='<td class="lb-profit '+(t.profit>=0?'pos':'neg')+'">'+(t.profit>=0?'+':'')+'£'+t.profit.toFixed(2)+'</td>';
-    h+='<td>'+t.finalMonths+'</td>';
-    h+='<td>'+rtag+'</td>';
-    h+='</tr>';
-  });
-  h+='</tbody></table>';
-  body.innerHTML=h;
+  // Confetti dots
+  const colours = ['#8FC32E','#889CE7','#FFD60A','#FF9500','#FF4D6D','#fff'];
+  const bar = document.getElementById('confettiBtns');
+  bar.innerHTML = colours.concat(colours).map((c,i) =>
+    `<div class="confetti-dot" style="background:${c};animation-delay:${i*0.05}s;"></div>`
+  ).join('');
+
+  showScreen('s-win');
 }
 
-// ── SAVE ────────────────────────────────────────
-function saveTeam(){
-  try{
-    var data={
-      team:G.team,members:G.members,
-      spi:G.spi,profit:G.profit,finalCPA:G.finalCPA,finalMonths:G.finalMonths,ltv:G.ltv,
-      risk:G.risk,
-      profitScore:G.profitScore,retentionScore:G.retentionScore,
-      alignScore:G.alignScore,riskScore:G.riskScore,
-      execPenalty:G.execPenalty,writtenBonus:G.writtenBonus,
-      objective:G.objective,audience:G.audience,platform:G.platform,
-      channels:G.channels,hooks:G.hooks,formats:G.formats,
-      sound:G.sound,ots:G.ots,orientation:G.orientation,viewDur:G.viewDur,
-      p1text:G.p1text,p2text:G.p2text,p3text:G.p3text,
-      completedAt:G.completedAt
-    };
-    localStorage.setItem(LS_TEAM+G.team,JSON.stringify(data));
-    var list=JSON.parse(localStorage.getItem(LS_KEY)||'[]');
-    if(!list.includes(G.team)){list.push(G.team);localStorage.setItem(LS_KEY,JSON.stringify(list));}
-  }catch(e){}
+/* ── STREAK BANNER ── */
+let streakTO;
+function showStreakBanner(msg) {
+  const el = document.getElementById('streakBanner');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(streakTO);
+  streakTO = setTimeout(() => el.classList.remove('show'), 2000);
 }
+
+/* ── BONUS POPUP ── */
+let bonusTO;
+function showBonusPopup(num, label) {
+  const pop = document.getElementById('bonusPop');
+  document.getElementById('bonusNum').textContent = num;
+  document.getElementById('bonusLabel').textContent = label;
+  pop.classList.add('show');
+  clearTimeout(bonusTO);
+  bonusTO = setTimeout(() => pop.classList.remove('show'), 1400);
+}
+
+/* ── LIGHT / DARK MODE ── */
+function toggleMode(isLight) {
+  document.body.classList.toggle('light', isLight);
+  document.getElementById('modeLabel').textContent = isLight ? 'Light Mode' : 'Dark Mode';
+  localStorage.setItem('dxTheme', isLight ? 'light' : 'dark');
+}
+
+// Apply saved theme on load (script is at bottom of body so DOM is ready)
+(function() {
+  const saved = localStorage.getItem('dxTheme');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    const t = document.getElementById('modeToggle');
+    if (t) t.checked = true;
+    const l = document.getElementById('modeLabel');
+    if (l) l.textContent = 'Light Mode';
+  }
+})();
 </script>
 </body>
 </html>
